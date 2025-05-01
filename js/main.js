@@ -1,73 +1,168 @@
-//Interacción del control con la vista
+document.addEventListener("DOMContentLoaded", function () {
+  // === Inicialización general ===
+  const campos = document.querySelectorAll(".campo");
+  const botones = document.querySelectorAll(".boton");
+  const elementosInteractivos = Array.from(campos).concat(Array.from(botones));
+  let index = 0;
 
-document.addEventListener('DOMContentLoaded', function () {
-    const campos = document.querySelectorAll('.campo'); //Se seleccionan los campos y se guardan en un array
-    const botones = document.querySelectorAll('.boton'); //Lo mismo con los botones
-    const elementosInteractivos = Array.from(campos).concat(Array.from(botones)); // Se combinan los arrays campos y botones
-    let index = -1; // Se inicializa el índice
+  if (elementosInteractivos.length > 0) {
+    elementosInteractivos[index].focus();
+  }
 
-    // Manejo de las teclas del control del televisor
+  // === Navegación con control remoto (flechas como grilla visual) ===
+  document.addEventListener("keydown", function (event) {
+    const actual = elementosInteractivos[index];
+    const currentRect = actual.getBoundingClientRect();
 
-    document.addEventListener('keydown', function (event) { // Se utiliza 'event'para capturar la tecla presionada
+    function encontrarElemento(direccion) {
+      let mejorDistancia = Infinity;
+      let mejorIndex = index;
 
-        if (elementosInteractivos && elementosInteractivos.length > 0) { //Se valida que el arreglo no este vacío
-            elementosInteractivos.forEach(function (elemento, i) { //Se utiliza una funcion estadar para iterar
+      elementosInteractivos.forEach((el, i) => {
+        if (i === index) return;
+        const rect = el.getBoundingClientRect();
 
-                if (elemento === document.activeElement) {
-                    index = i; //Se actualiza el índice inicial al del elemento enfocado
-                }
-            });
+        let valido = false;
+        let distancia = Infinity;
 
-            switch (event.keyCode) {
-                //Arriba
-                case 38:
-                    if (index > 0) {
-                        elementosInteractivos[index - 1].focus(); //Enfoca al elemento anterior
-                        console.log('Arriba');
-                    }
-                    break;
-
-                //Abajo
-                case 40:
-                    if (index < elementosInteractivos.length - 1) {
-                        elementosInteractivos[index + 1].focus(); //Enfoca al siguiente elemento
-                        console.log('Abajo');
-                    }
-                    break;
-
-                //Click
-                case 13:
-                    if (index !== -1 && elementosInteractivos[index]) { //Se verifica la validez del indice y el elemento
-                        if (elementosInteractivos[index].classList.contains('boton')) {
-                            elementosInteractivos[index].click();
-                            console.log('Click botón:', elementosInteractivos[index].textContent || 'Sin texto');
-                        } else {
-                            console.log('Click en el campo:', elementosInteractivos[index].id || 'Elemento no encontrado');
-                        }
-                    } else {
-                        console.warn('No hay elemento interactivo enfocado para darle click'); //Advertencia
-                    }
-                    break;
-
-                default:
-                    console.log('Boton no reconocido:', event.keyCode);
-                    break;
-            }
-        } else {
-            console.warn('El arreglo "elementosInteractivos" esta vacio o no existe.'); //Advertencia
+        switch (direccion) {
+          case "up":
+            valido = rect.bottom <= currentRect.top;
+            distancia = Math.abs(rect.left - currentRect.left) + Math.abs(rect.bottom - currentRect.top);
+            break;
+          case "down":
+            valido = rect.top >= currentRect.bottom;
+            distancia = Math.abs(rect.left - currentRect.left) + Math.abs(rect.top - currentRect.bottom);
+            break;
+          case "left":
+            valido = rect.right <= currentRect.left;
+            distancia = Math.abs(rect.top - currentRect.top) + Math.abs(rect.right - currentRect.left);
+            break;
+          case "right":
+            valido = rect.left >= currentRect.right;
+            distancia = Math.abs(rect.top - currentRect.top) + Math.abs(rect.left - currentRect.right);
+            break;
         }
+
+        if (valido && distancia < mejorDistancia) {
+          mejorDistancia = distancia;
+          mejorIndex = i;
+        }
+      });
+
+      return mejorIndex;
+    }
+
+    switch (event.keyCode) {
+      case 38: // ↑
+        index = encontrarElemento("up");
+        break;
+      case 40: // ↓
+        index = encontrarElemento("down");
+        break;
+      case 37: // ←
+        index = encontrarElemento("left");
+        break;
+      case 39: // →
+        index = encontrarElemento("right");
+        break;
+      case 13: // Enter / OK
+        if (elementosInteractivos[index]) {
+          elementosInteractivos[index].click();
+        }
+        break;
+    }
+
+    elementosInteractivos[index].focus();
+  });
+
+  // === Soporte Tizen: habilita flechas y Enter en TV ===
+  if (typeof tizen !== "undefined" && tizen.tvinputdevice) {
+    tizen.tvinputdevice.registerKey("ArrowUp");
+    tizen.tvinputdevice.registerKey("ArrowDown");
+    tizen.tvinputdevice.registerKey("ArrowLeft");
+    tizen.tvinputdevice.registerKey("ArrowRight");
+    tizen.tvinputdevice.registerKey("Enter");
+  }
+
+  // === Botón "Comenzar" (inicio.html hacia registro.html) ===
+  const btnComenzar = document.getElementById("btnComenzar");
+  if (btnComenzar) {
+    btnComenzar.addEventListener("click", function () {
+      console.log("Click comenzar");
+      window.location.href = "registro.html";
+    });
+  }
+
+  // === Mostrar el nombre del usuario en menu.html ===
+  const nombreUsuario = document.getElementById("nombreUsuario");
+  if (nombreUsuario) {
+    const nombreGuardado = localStorage.getItem("nombre");
+    if (nombreGuardado) {
+      nombreUsuario.textContent = nombreGuardado;
+    } else {
+      nombreUsuario.textContent = "Invitado";
+    }
+  }
+
+  // === Manejo del formulario de registro ===
+  const form = document.getElementById("registroForm");
+  const edadInput = document.getElementById("edad");
+  const nivelInput = document.getElementById("nivel");
+  const nombreInput = document.getElementById("nombre");
+
+  if (form) {
+    // Botones de edad
+    document.querySelectorAll('.boton[data-tipo="edad"]').forEach(btn => {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll('.boton[data-tipo="edad"]').forEach(b => b.classList.remove("seleccionado"));
+        btn.classList.add("seleccionado");
+        edadInput.value = btn.textContent.trim();
+        localStorage.setItem("edad", edadInput.value);
+      });
     });
 
-    //Redireccion desde inicio.html hacia registro.html por medio del btnComenzar
+    // Botones de nivel educativo
+    document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(btn => {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(b => b.classList.remove("seleccionado"));
+        btn.classList.add("seleccionado");
+        nivelInput.value = btn.textContent.trim();
+        localStorage.setItem("nivelEducativo", nivelInput.value);
+      });
+    });
 
-    const btnComenzar = document.getElementById('btnComenzar'); //Selecciona el botón por su ID
-    if (btnComenzar) {
-        btnComenzar.addEventListener('click', function () {
-            console.log('Click comenzar');
-            window.location.href = 'registro.html'; //Se redirecciona a registro.html
-        });
-    }
-    else {
-        console.error('El boton no se encuentra.'); //Error
-    }
+    // Validación al enviar
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nombre = nombreInput.value.trim();
+      const edad = edadInput.value.trim();
+      const nivel = nivelInput.value.trim();
+
+      if (!nombre || !edad || !nivel) {
+        alert("Por favor completa todos los campos antes de continuar.");
+        return;
+      }
+
+      localStorage.setItem("nombre", nombre);
+      window.location.href = "menu.html";
+    });
+  }
+
+  // === Botones del menú (Jugar / Progreso) ===
+  const btnJugar = document.getElementById("btnJugar");
+  const btnProgreso = document.getElementById("btnProgreso");
+
+  if (btnJugar) {
+    btnJugar.addEventListener("click", function () {
+      window.location.href = "preguntas.html";
+    });
+  }
+
+  if (btnProgreso) {
+    btnProgreso.addEventListener("click", function () {
+      window.location.href = "progreso.html";
+    });
+  }
 });
