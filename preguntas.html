@@ -6,46 +6,132 @@
   <link rel="stylesheet" href="css/style.css">
   <script defer src="js/main.js"></script>
   <script defer>
-    document.addEventListener("DOMContentLoaded", function () {
-      const respuestaCorrecta = "4";
+    function actualizarResumen(esCorrecto) {
+      let resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
+        correctas: 0,
+        incorrectas: 0,
+        total: 0
+      };
 
-      // Validar respuesta
-      document.querySelectorAll('.boton[data-respuesta]').forEach(btn => {
-        btn.addEventListener("click", function () {
-          const valor = btn.getAttribute("data-respuesta");
-          if (valor === respuestaCorrecta) {
-            alert("¡Muy bien! 🐮");
-          } else {
-            alert("¡Sigue intentando!");
+      resumen.total += 1;
+      if (esCorrecto) resumen.correctas += 1;
+      else resumen.incorrectas += 1;
+
+      localStorage.setItem("resumenProgreso", JSON.stringify(resumen));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const secciones = document.querySelectorAll('.pregunta-seccion');
+      const feedback = document.getElementById("feedback");
+      let indice = 0;
+
+      function mostrarPregunta(i) {
+        secciones.forEach((sec, idx) => {
+          sec.style.display = idx === i ? 'block' : 'none';
+        });
+        feedback.textContent = '';
+        feedback.style.color = 'white';
+
+        // 🔁 Refrescar foco al primer botón visible
+        setTimeout(() => {
+          const visibles = Array.from(document.querySelectorAll('.boton'))
+            .filter(el => el.offsetParent !== null);
+          if (visibles.length > 0) {
+            visibles[0].focus();
           }
+        }, 100);
+      }
+
+      function registrarIntento(preguntaTexto, respuestaUsuario, esCorrecto) {
+        let historial = JSON.parse(localStorage.getItem("historialIntentos")) || [];
+        historial.push({
+          pregunta: preguntaTexto,
+          respuesta: respuestaUsuario,
+          correcto: esCorrecto,
+          fecha: new Date().toISOString()
+        });
+        localStorage.setItem("historialIntentos", JSON.stringify(historial));
+      }
+
+      function verificar(btn, correcta, siguiente) {
+        const respuestaUsuario = btn.textContent;
+        const esCorrecto = btn.getAttribute("data-respuesta") === correcta;
+        const textoPregunta = secciones[indice].querySelector('h1').textContent;
+
+        feedback.textContent = esCorrecto ? "✔¡Muy bien, sigue así! 🐮" : "❌Ups, intenta otra vez.😅";
+        feedback.style.color = esCorrecto ? "lime" : "red";
+
+        registrarIntento(textoPregunta, respuestaUsuario, esCorrecto);
+        actualizarResumen(esCorrecto);
+
+        setTimeout(() => {
+          if (esCorrecto && siguiente !== null) {
+            indice++;
+            mostrarPregunta(indice);
+          }
+        }, 2000);
+      }
+
+      secciones.forEach((seccion, idx) => {
+        const correcta = seccion.getAttribute("data-correcta");
+        const botones = seccion.querySelectorAll(".boton[data-respuesta]");
+
+        botones.forEach(btn => {
+          btn.addEventListener("click", () =>
+            verificar(btn, correcta, idx < secciones.length - 1 ? idx + 1 : null)
+          );
         });
       });
 
-      // Botón regresar
       document.getElementById("btnVolver").addEventListener("click", () => {
         window.location.href = "menu.html";
       });
+
+      mostrarPregunta(indice);
     });
   </script>
 </head>
-<body>
-
+<body class="body-general">
   <button id="btnVolver" class="boton" tabindex="0">Regresar</button>
 
   <div class="pregunta-container">
-     <h1 style="font-size: 75px;">Realiza la suma</h1>
-    <h1 style="font-size:70px;">2 + 2</h1>
+    <h1 style="font-size: 75px;">Realiza la operación</h1>
+    
+     <!----------------------- PREGUNTAS------------------------->
 
-    <div class="opciones">
-      <button class="boton" data-respuesta="4" tabindex="0">4</button>
-      <button class="boton" data-respuesta="5" tabindex="0">5</button>
-      <button class="boton" data-respuesta="2" tabindex="0">2</button>
+    <!-- Pregunta 1 -->
+    <div class="pregunta-seccion" data-correcta="4">
+      <h1 style="font-size:70px;">2 + 2</h1>
+      <div class="opciones">
+        <button class="boton" data-respuesta="4" tabindex="0">4</button>
+        <button class="boton" data-respuesta="5" tabindex="0">5</button>
+        <button class="boton" data-respuesta="2" tabindex="0">2</button>
+      </div>
+    </div>
+
+    <!-- Pregunta 2 -->
+    <div class="pregunta-seccion" data-correcta="3" style="display: none;">
+      <h1 style="font-size:70px;">1 + 2</h1>
+      <div class="opciones">
+        <button class="boton" data-respuesta="3" tabindex="0">3</button>
+        <button class="boton" data-respuesta="4" tabindex="0">4</button>
+        <button class="boton" data-respuesta="2" tabindex="0">2</button>
+      </div>
+    </div>
+
+    <!-- Pregunta 3 -->
+    <div class="pregunta-seccion" data-correcta="8" style="display: none;">
+      <h1 style="font-size:70px;">5 + 3</h1>
+      <div class="opciones">
+        <button class="boton" data-respuesta="2" tabindex="0">2</button>
+        <button class="boton" data-respuesta="6" tabindex="0">6</button>
+        <button class="boton" data-respuesta="8" tabindex="0">8</button>
+      </div>
     </div>
 
 
+
+    <div id="feedback" class="mensaje-inferior"></div>
   </div>
-
-  <!--<img src="Images/vaca.png" alt="vaca" class="vaca">  imagen decorativa -->
-
 </body>
 </html>
