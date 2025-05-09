@@ -1,32 +1,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>To Learn</title>
-    <link rel="stylesheet" href="css/style.css">    
-    <script src="js/main.js" defer></script>
+  <meta charset="UTF-8">
+  <title>To Learn - Registro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
 </head>
 <body class="body-general">
 
-<!-- Pagina registro, con el logo, su formulario correspondiente y boton para continuar --> -->
+  <div class="contenedor">
+    <img src="Images/Logo.png" alt="Logo" class="logo">
 
-    <div class="contenedor">
-        <img src="Images/Logo.png" alt="Logo" class="logo">
-     
     <div class="formulario-contenedor">
-        <form class="formulario">
-        
-            <label for="nombre" class="etiqueta">Nombre:</label>
-            <input type="text" id="nombre" class="campo" placeholder="Escribe aqui" required>
+      <form class="formulario" id="registroForm">
 
-            <label for="edad" class="etiqueta">Edad:</label>
-            <input type="number" id="edad" class="campo" placeholder="Escribe aqui" required>
+        <!-- Nombre -->
+        <label for="nombre" class="etiqueta">Nombre:</label>
+        <input type="text" id="nombre" class="campo" placeholder="Escribe aquí" required>
 
-            <label for="nivel" class="etiqueta">Nivel educativo:</label>
-            <input type="text" id="nivel" class="campo" placeholder="Ejemplo: Primero" required>
+        <!-- Edad -->
+        <label class="etiqueta">Edad:</label>
+        <div class="edad-grid">
+          <button type="button" class="boton" data-tipo="edad">4</button>
+          <button type="button" class="boton" data-tipo="edad">5</button>
+          <button type="button" class="boton" data-tipo="edad">6</button>
+          <button type="button" class="boton" data-tipo="edad">7</button>
+          <button type="button" class="boton" data-tipo="edad">8</button>
+        </div>
 
-            <button type="submit" class="boton">Continuar</button>
-        </form>
+        <!-- Nivel educativo -->
+        <label class="etiqueta">Nivel educativo:</label>
+        <div class="niveles-grid">
+          <button type="button" class="boton" data-tipo="nivel">No posee nivel educativo</button>
+          <button type="button" class="boton" data-tipo="nivel">Jardín</button>
+          <button type="button" class="boton" data-tipo="nivel">Primero</button>
+          <button type="button" class="boton" data-tipo="nivel">Segundo</button>
+          <button type="button" class="boton" data-tipo="nivel">Tercero</button>
+          <button type="button" class="boton" data-tipo="nivel">Cuarto</button>
+        </div>
+
+        <!-- Inputs ocultos para los valores -->
+        <input type="hidden" id="edad" name="edad">
+        <input type="hidden" id="nivel" name="nivel">
+
+        <!-- Botón para continuar -->
+        <button type="submit" class="boton" id="btnContinuar">Continuar</button>
+
+      </form>
     </div>
-    </div>
+  </div>
+
 </body>
 </html>
