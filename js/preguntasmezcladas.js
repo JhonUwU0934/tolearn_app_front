@@ -2,33 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
   const edad = parseInt(localStorage.getItem("edad")) || 4;
-  const nivel = localStorage.getItem("nivelEducativo") || "";
-
-  let cifras;
-  switch (nivel.toLowerCase()) {
-    case "jardín":
-    case "jardin":
-      cifras = 1;
-      break;
-    case "primero":
-      cifras = 1;
-      break;
-    case "segundo":
-      cifras = 2;
-      break;
-    case "tercero":
-      cifras = 3;
-      break;
-    case "cuarto":
-      cifras = 4;
-      break;
-    default:
-      if (edad === 4 || edad === 5) cifras = 1;
-      else if (edad === 6) cifras = 2;
-      else if (edad === 7) cifras = 3;
-      else if (edad >= 8) cifras = 4;
-      else cifras = 1;
-  }
+  const cifras = edad >= 6 ? 2 : 1;
 
   let indexPregunta = 0;
   const totalPreguntas = 10;
@@ -36,15 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
   let correctas = 0;
   let incorrectas = 0;
 
-  function generarPregunta() {
-    let max = Math.pow(10, cifras);
-    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
+  function generarPregunta(i) {
+    const operacion = i % 2 === 0 ? "suma" : "resta";
+    let num1 = cifras === 1 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 90) + 10;
+    let num2 = cifras === 1 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 90) + 10;
 
-    let num1 = Math.floor(Math.random() * (max - min)) + min;
-    let num2 = Math.floor(Math.random() * (max - min)) + min;
+    if (operacion === "resta" && num2 > num1) [num1, num2] = [num2, num1];
 
-    const correcta = num1 + num2;
-    const texto = `${num1} + ${num2}`;
+    const correcta = operacion === "suma" ? num1 + num2 : num1 - num2;
+    const texto = operacion === "suma" ? `${num1} + ${num2}` : `${num1} - ${num2}`;
 
     const opciones = new Set([correcta]);
     while (opciones.size < 3) {
@@ -121,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   for (let i = 0; i < totalPreguntas; i++) {
-    preguntasGeneradas.push(generarPregunta());
+    preguntasGeneradas.push(generarPregunta(i));
   }
 
   mostrarPregunta();
@@ -132,4 +106,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-

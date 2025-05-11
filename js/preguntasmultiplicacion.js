@@ -2,33 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
   const edad = parseInt(localStorage.getItem("edad")) || 4;
-  const nivel = localStorage.getItem("nivelEducativo") || "";
-
-  let cifras;
-  switch (nivel.toLowerCase()) {
-    case "jardín":
-    case "jardin":
-      cifras = 1;
-      break;
-    case "primero":
-      cifras = 1;
-      break;
-    case "segundo":
-      cifras = 2;
-      break;
-    case "tercero":
-      cifras = 3;
-      break;
-    case "cuarto":
-      cifras = 4;
-      break;
-    default:
-      if (edad === 4 || edad === 5) cifras = 1;
-      else if (edad === 6) cifras = 2;
-      else if (edad === 7) cifras = 3;
-      else if (edad >= 8) cifras = 4;
-      else cifras = 1;
-  }
+  const cifras = edad >= 6 ? 2 : 1;
 
   let indexPregunta = 0;
   const totalPreguntas = 10;
@@ -37,27 +11,23 @@ document.addEventListener("DOMContentLoaded", function () {
   let incorrectas = 0;
 
   function generarPregunta() {
-    let max = Math.pow(10, cifras);
-    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
-
-    let num1 = Math.floor(Math.random() * (max - min)) + min;
-    let num2 = Math.floor(Math.random() * (max - min)) + min;
-
-    const correcta = num1 + num2;
-    const texto = `${num1} + ${num2}`;
-
+    const num1 = cifras === 1 ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 90) + 10;
+    const num2 = cifras === 1 ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 90) + 10;
+    const correcta = num1 * num2;
     const opciones = new Set([correcta]);
+
     while (opciones.size < 3) {
       const variacion = Math.floor(Math.random() * 10) + 1;
-      const signo = Math.random() < 0.5 ? -1 : 1;
-      const distractor = correcta + (variacion * signo);
+      const distractor = correcta + (Math.random() < 0.5 ? -variacion : variacion);
       if (distractor >= 0) opciones.add(distractor);
     }
 
+    const opcionesArray = Array.from(opciones).sort(() => Math.random() - 0.5);
+
     return {
-      texto,
+      texto: `${num1} × ${num2}`,
       correcta,
-      opciones: Array.from(opciones).sort(() => Math.random() - 0.5)
+      opciones: opcionesArray
     };
   }
 
@@ -93,9 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
     img.src = imagenAnimal;
     img.style.display = "block";
 
-    feedback.textContent = correcta ? "✔¡Muy bien!" : "❌Intenta otra vez.";
+    feedback.textContent = correcta ? "✔ ¡Excelente!" : "❌ Intenta otra vez.";
     feedback.style.color = correcta ? "lime" : "red";
-
     correcta ? correctas++ : incorrectas++;
 
     indexPregunta++;
@@ -109,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <h2 style="font-size: 50px;">🎉 ¡Terminaste!</h2>
             <p style="font-size: 30px;">✅ Acertaste: ${correctas}</p>
             <p style="font-size: 30px;">❌ Fallaste: ${incorrectas}</p>
-            <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+            <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver a niveles</button>
           </div>
         `;
       }
@@ -132,4 +101,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
