@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let index = 0;
 
   function obtenerElementosInteractivos() {
-    const visibles = Array.from(document.querySelectorAll('.boton, input[type="text"]'))
+	  const visibles = Array.from(document.querySelectorAll('.boton, input[type="text"], .animal-btn'))
       .filter(el => el.offsetParent !== null);
     return visibles;
   }
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       localStorage.setItem("nombre", nombre);
-      window.location.href = "menu.html";
+      window.location.href = "seleccionanimal.html";
     });
   }
 

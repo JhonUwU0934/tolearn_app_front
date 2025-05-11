@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `<button class="boton" data-respuesta="${op}" tabindex="0">${op}</button>`
           ).join("")}
         </div>
+        <img id="animalExpresion" src="" alt="Animal expresión" class="animal-grande" />
       </div>
     `;
 
@@ -56,13 +57,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const esCorrecta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
     const textoPregunta = preguntasGeneradas[indexPregunta].texto;
 
+    // Mostrar imagen del animal
+    const animal = localStorage.getItem("animalSeleccionado") || "capibara";
+    const expresion = esCorrecta ? "feliz" : "triste";
+    const imagenAnimal = `Images/${capitalizar(animal)} ${expresion}.png`;
+    document.getElementById("animalExpresion").src = imagenAnimal;
+
     if (esCorrecta) {
       correctasSesion++;
-      feedback.textContent = "✔¡Muy bien, sigue así! 🐮";
+      feedback.textContent = "✔¡Muy bien, sigue así!";
       feedback.style.color = "lime";
     } else {
       incorrectasSesion++;
-      feedback.textContent = "❌Ups, intenta otra vez.😅";
+      feedback.textContent = "❌Ups, intenta otra vez.";
       feedback.style.color = "red";
     }
 
@@ -122,3 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.href = "menu.html";
   });
 });
+
+// Esta función va FUERA del DOMContentLoaded
+function capitalizar(texto) {
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
