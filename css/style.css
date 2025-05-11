@@ -38,19 +38,22 @@ body {
 }
 
 .boton {
-    background: #FFA500;
-    color: white;
-    font-size: 54px;
-    padding: 60px 120px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    outline: none;
+  background-color: #ffa726; /* naranja */
+  color: white;
+  font-size: 22px;
+  padding: 18px 25px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 160px;
+  text-align: center;
+  transition: transform 0.2s, background-color 0.3s;
 }
 
 .boton:focus {
-    background: #FF8C00;
-    outline: 3px solid white;
+   background-color: #fb8c00;
+  transform: scale(1.05);
+  outline: none;
 }
 
 .logo {
@@ -75,3 +78,82 @@ body {
     outline: none;
     margin-bottom: 20px;
 }
+
+.niveles-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.nivel-btn {
+  background-color: #ffa726; /* naranja */
+  color: white;
+  font-size: 22px;
+  padding: 18px 25px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 160px;
+  text-align: center;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.nivel-btn:hover,
+.nivel-btn:focus,
+.nivel-btn.selected {
+  background-color: #fb8c00;
+  transform: scale(1.05);
+  outline: none;
+}
+
+.edad-grid, .niveles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.boton.seleccionado {
+    background-color: #fb8c00 !important;
+    box-shadow: 0 0 8px #fff;
+}
+.boton.seleccionado {
+  background-color: #fb8c00 !important;
+  box-shadow: 0 0 8px #fff;
+}
+
+.edad-grid, .niveles-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+ .pregunta-container {
+      text-align: center;
+      margin-top: 80px;
+      color: white;
+    }
+
+    .opciones {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .mensaje-inferior {
+      margin-top: 50px;
+      font-size: 28px;
+      font-weight: bold;
+      color: white
+    }
+
+    #btnVolver {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+
