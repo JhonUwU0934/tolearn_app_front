@@ -4,48 +4,16 @@
   <meta charset="UTF-8">
   <title>To Learn - Pregunta</title>
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="js/main.js"></script>
-  <script defer>
-    document.addEventListener("DOMContentLoaded", function () {
-      const respuestaCorrecta = "4";
-
-      // Validar respuesta
-      document.querySelectorAll('.boton[data-respuesta]').forEach(btn => {
-        btn.addEventListener("click", function () {
-          const valor = btn.getAttribute("data-respuesta");
-          if (valor === respuestaCorrecta) {
-            alert("¡Muy bien! 🐮");
-          } else {
-            alert("¡Sigue intentando!");
-          }
-        });
-      });
-
-      // Botón regresar
-      document.getElementById("btnVolver").addEventListener("click", () => {
-        window.location.href = "menu.html";
-      });
-    });
-  </script>
+  <script src="js/main.js" defer></script>
+  <script src="js/preguntas.js"></script>
 </head>
-<body>
-
+<body class="body-general">
   <button id="btnVolver" class="boton" tabindex="0">Regresar</button>
 
   <div class="pregunta-container">
-     <h1 style="font-size: 75px;">Realiza la suma</h1>
-    <h1 style="font-size:70px;">2 + 2</h1>
-
-    <div class="opciones">
-      <button class="boton" data-respuesta="4" tabindex="0">4</button>
-      <button class="boton" data-respuesta="5" tabindex="0">5</button>
-      <button class="boton" data-respuesta="2" tabindex="0">2</button>
-    </div>
-
-
+    <h1 style="font-size: 75px;">Realiza la operación</h1>
+    <div id="zonaPreguntas"></div>
+    <div id="feedback" class="mensaje-inferior"></div>
   </div>
-
-  <!--<img src="Images/vaca.png" alt="vaca" class="vaca">  imagen decorativa -->
-
 </body>
 </html>

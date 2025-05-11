@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>To Learn - Progreso</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+      const resumenDiv = document.getElementById("resumenProgreso");
+      const historialDiv = document.getElementById("historialIntentos");
+      const canvas = document.getElementById("graficoProgreso");
+
+      const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
+        correctas: 0,
+        incorrectas: 0,
+        total: 0
+      };
+
+      const historial = JSON.parse(localStorage.getItem("historialIntentos")) || [];
+
+      // Mostrar texto resumen
+      resumenDiv.innerHTML = `
+        <h2>Tu progreso:</h2>
+        <p>✅ Correctas: <strong>${resumen.correctas}</strong></p>
+        <p>❌ Incorrectas: <strong>${resumen.incorrectas}</strong></p>
+        <p>📊 Total de preguntas respondidas: <strong>${resumen.total}</strong></p>
+      `;
+
+      // Mostrar historial
+      if (historial.length > 0) {
+        historialDiv.innerHTML = `
+          <h3>Historial de respuestas:</h3>
+          <ul>
+            ${historial.map(item => `
+              <li>
+                <strong>${item.pregunta}</strong> → 
+                tú dijiste "<em>${item.respuesta}</em>" 
+                (${item.correcto ? "✔ correcto" : "❌ incorrecto"})
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      } else {
+        historialDiv.innerHTML = "<p>No hay respuestas registradas aún.</p>";
+      }
+
+      // Crear gráfico de barras
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: ['Correctas', 'Incorrectas'],
+          datasets: [{
+            label: 'Respuestas',
+            data: [resumen.correctas, resumen.incorrectas],
+            backgroundColor: ['green', 'red']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Progreso de Respuestas'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      });
+      
+
+      // Botones
+      document.getElementById("btnReiniciar").addEventListener("click", () => {
+        localStorage.removeItem("historialIntentos");
+        localStorage.removeItem("resumenProgreso");
+        alert("Progreso reiniciado.");
+        window.location.reload();
+      });
+
+      document.getElementById("btnVolver").addEventListener("click", () => {
+        window.location.href = "menu.html";
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="contenedor-progreso">
+    <button class="boton" id="btnVolver">⬅ Volver al menú</button>
+
+    <div id="resumenProgreso" style="margin-top:20px;"></div>
+
+    <canvas id="graficoProgreso" width="400" height="200" style="margin-top:20px;"></canvas>
+
+    <div id="historialIntentos" style="margin-top:30px;"></div>
+
+    <button class="boton" id="btnReiniciar" style="margin-top:30px;">🔄 Reiniciar progreso</button>
+  </div>
+</body>
+</html>

@@ -1,16 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // === Inicialización general ===
-  const campos = document.querySelectorAll(".campo");
-  const botones = document.querySelectorAll(".boton");
-  const elementosInteractivos = Array.from(campos).concat(Array.from(botones));
   let index = 0;
+
+  function obtenerElementosInteractivos() {
+    const visibles = Array.from(document.querySelectorAll('.boton, input[type="text"]'))
+      .filter(el => el.offsetParent !== null);
+    return visibles;
+  }
+
+  let elementosInteractivos = obtenerElementosInteractivos();
 
   if (elementosInteractivos.length > 0) {
     elementosInteractivos[index].focus();
   }
 
-  // === Navegación con control remoto (flechas como grilla visual) ===
   document.addEventListener("keydown", function (event) {
+    elementosInteractivos = obtenerElementosInteractivos();
+    if (elementosInteractivos.length === 0) return;
+    if (!elementosInteractivos[index]) index = 0;
+
     const actual = elementosInteractivos[index];
     const currentRect = actual.getBoundingClientRect();
 
@@ -21,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
       elementosInteractivos.forEach((el, i) => {
         if (i === index) return;
         const rect = el.getBoundingClientRect();
-
         let valido = false;
         let distancia = Infinity;
 
@@ -54,29 +60,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     switch (event.keyCode) {
-      case 38: // ↑
+      case 38:
         index = encontrarElemento("up");
         break;
-      case 40: // ↓
+      case 40:
         index = encontrarElemento("down");
         break;
-      case 37: // ←
+      case 37:
         index = encontrarElemento("left");
         break;
-      case 39: // →
+      case 39:
         index = encontrarElemento("right");
         break;
-      case 13: // Enter / OK
+      case 13:
         if (elementosInteractivos[index]) {
-          elementosInteractivos[index].click();
+          elementosInteractivos[index].click?.();
+          elementosInteractivos[index].focus();
         }
         break;
     }
 
-    elementosInteractivos[index].focus();
+    if (elementosInteractivos[index]) {
+      elementosInteractivos[index].focus();
+    }
   });
 
-  // === Soporte Tizen: habilita flechas y Enter en TV ===
   if (typeof tizen !== "undefined" && tizen.tvinputdevice) {
     tizen.tvinputdevice.registerKey("ArrowUp");
     tizen.tvinputdevice.registerKey("ArrowDown");
@@ -85,34 +93,25 @@ document.addEventListener("DOMContentLoaded", function () {
     tizen.tvinputdevice.registerKey("Enter");
   }
 
-  // === Botón "Comenzar" (inicio.html hacia registro.html) ===
   const btnComenzar = document.getElementById("btnComenzar");
   if (btnComenzar) {
     btnComenzar.addEventListener("click", function () {
-      console.log("Click comenzar");
       window.location.href = "registro.html";
     });
   }
 
-  // === Mostrar el nombre del usuario en menu.html ===
   const nombreUsuario = document.getElementById("nombreUsuario");
   if (nombreUsuario) {
     const nombreGuardado = localStorage.getItem("nombre");
-    if (nombreGuardado) {
-      nombreUsuario.textContent = nombreGuardado;
-    } else {
-      nombreUsuario.textContent = "Invitado";
-    }
+    nombreUsuario.textContent = nombreGuardado || "Invitado";
   }
 
-  // === Manejo del formulario de registro ===
   const form = document.getElementById("registroForm");
   const edadInput = document.getElementById("edad");
   const nivelInput = document.getElementById("nivel");
   const nombreInput = document.getElementById("nombre");
 
   if (form) {
-    // Botones de edad
     document.querySelectorAll('.boton[data-tipo="edad"]').forEach(btn => {
       btn.addEventListener("click", function () {
         document.querySelectorAll('.boton[data-tipo="edad"]').forEach(b => b.classList.remove("seleccionado"));
@@ -122,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Botones de nivel educativo
     document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(btn => {
       btn.addEventListener("click", function () {
         document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(b => b.classList.remove("seleccionado"));
@@ -132,10 +130,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Validación al enviar
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-
       const nombre = nombreInput.value.trim();
       const edad = edadInput.value.trim();
       const nivel = nivelInput.value.trim();
@@ -150,7 +146,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // === Botones del menú (Jugar / Progreso) ===
   const btnJugar = document.getElementById("btnJugar");
   const btnProgreso = document.getElementById("btnProgreso");
 
