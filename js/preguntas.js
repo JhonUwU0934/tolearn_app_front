@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let indexPregunta = 0;
   const totalPreguntas = 10;
   const preguntasGeneradas = [];
+  let correctasSesion = 0;
+  let incorrectasSesion = 0;
 
   function generarPregunta() {
     const num1 = cifras === 1 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 90) + 10;
@@ -50,27 +52,40 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function verificarRespuesta(btn) {
-	  const respuesta = parseInt(btn.textContent);
-	  const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
-	  const textoPregunta = preguntasGeneradas[indexPregunta].texto;
+    const respuesta = parseInt(btn.textContent);
+    const esCorrecta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
+    const textoPregunta = preguntasGeneradas[indexPregunta].texto;
 
-	  feedback.textContent = correcta ? "✔¡Muy bien, sigue así! 🐮" : "❌Ups, intenta otra vez.😅";
-	  feedback.style.color = correcta ? "lime" : "red";
+    if (esCorrecta) {
+      correctasSesion++;
+      feedback.textContent = "✔¡Muy bien, sigue así! 🐮";
+      feedback.style.color = "lime";
+    } else {
+      incorrectasSesion++;
+      feedback.textContent = "❌Ups, intenta otra vez.😅";
+      feedback.style.color = "red";
+    }
 
-	  actualizarResumen(correcta);
-	  registrarIntento(textoPregunta, respuesta, correcta);
+    actualizarResumen(esCorrecta);
+    registrarIntento(textoPregunta, respuesta, esCorrecta);
 
-	  indexPregunta++;
-	  setTimeout(() => {
-	    if (indexPregunta < preguntasGeneradas.length) {
-	      feedback.textContent = ""; // limpiar feedback al cambiar
-	      mostrarPregunta();
-	    } else {
-	      zonaPreguntas.innerHTML = `<h2 style="font-size: 50px; color: white; text-align:center;">🎉 ¡Terminaste los 10 ejercicios!</h2>`;
-	      feedback.textContent = "";
-	    }
-	  }, 2000);
-	}
+    indexPregunta++;
+    setTimeout(() => {
+      if (indexPregunta < preguntasGeneradas.length) {
+        feedback.textContent = "";
+        mostrarPregunta();
+      } else {
+        zonaPreguntas.innerHTML = `
+          <div style="text-align: center; color: white;">
+            <h2 style="font-size: 50px;">🎉 ¡Terminaste los 10 ejercicios!</h2>
+            <p style="font-size: 30px;">✅ Acertaste: ${correctasSesion}</p>
+            <p style="font-size: 30px;">❌ Fallaste: ${incorrectasSesion}</p>
+            <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver a niveles</button>
+          </div>
+        `;
+      }
+    }, 2000);
+  }
 
   function registrarIntento(pregunta, respuesta, correcto) {
     let historial = JSON.parse(localStorage.getItem("historialIntentos")) || [];
@@ -103,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  document.getElementById("btnVolver").addEventListener("click", function () {
+  document.getElementById("btnVolver")?.addEventListener("click", function () {
     window.location.href = "menu.html";
   });
 });

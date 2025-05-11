@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (btnJugar) {
     btnJugar.addEventListener("click", function () {
-      window.location.href = "preguntas.html";
+      window.location.href = "niveles.html";
     });
   }
 
