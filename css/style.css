@@ -116,6 +116,58 @@ body {
     margin-bottom: 25px;
 }
 
+.animal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  height: 100vh;
+  text-align: center;
+}
+
+.animal-container h1 {
+  color: white;
+  font-size: 60px;
+  margin: 0;
+  padding: 0;
+}
+
+.animal-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 60px;
+  padding: 20px;
+}
+
+.animal-btn {
+  width: 160px;
+  height: 160px;
+  cursor: pointer;
+  border: 6px solid transparent;
+  border-radius: 30px;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.animal-btn:focus,
+.animal-btn:hover {
+  transform: scale(1.2);
+  border-color: #ffa726;
+  outline: none;
+}
+
+.expresion-animal {
+  width: 300px;
+  height: auto;
+  margin-top: 40px;
+  transition: transform 0.2s ease;
+}
+
+#animalExpresion {
+  font-size: 0; /* Oculta el alt */
+}
+
 .boton.seleccionado {
     background-color: #fb8c00 !important;
     box-shadow: 0 0 8px #fff;
@@ -124,7 +176,14 @@ body {
   background-color: #fb8c00 !important;
   box-shadow: 0 0 8px #fff;
 }
-
+.contenedor-niveles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centrado vertical */
+  gap: 20px;
+  height: 100vh;
+}
 .edad-grid, .niveles-grid {
   display: flex;
   flex-wrap: wrap;
@@ -138,22 +197,24 @@ body {
       color: white;
     }
 
-    .opciones {
+ .opciones {
       margin-top: 40px;
       display: flex;
       justify-content: center;
       gap: 40px;
     }
 
-    .mensaje-inferior {
+ .mensaje-inferior {
       margin-top: 50px;
       font-size: 28px;
       font-weight: bold;
       color: white
     }
 
-    #btnVolver {
+ #btnVolver {
       position: absolute;
       top: 20px;
       left: 20px;
+
+
 
