@@ -93,8 +93,14 @@ document.addEventListener("DOMContentLoaded", function () {
     img.src = imagenAnimal;
     img.style.display = "block";
 
-    feedback.textContent = correcta ? "✔¡Muy bien!" : "❌Intenta otra vez.";
-    feedback.style.color = correcta ? "lime" : "red";
+    const nombre = localStorage.getItem("nombre");
+    if (correcta) {
+      feedback.innerHTML = `<div class="feedback-contenedor">¡Muy bien, ${nombre}!</div>`;
+      feedback.style.color = "black";
+    } else {
+      feedback.innerHTML = `<div class="feedback-contenedor">Vuelve a intentarlo.</div>`;
+      feedback.style.color = "black";
+    }
 
     correcta ? correctas++ : incorrectas++;
 
@@ -104,12 +110,31 @@ document.addEventListener("DOMContentLoaded", function () {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
+    	  
+        feedback.textContent = "";
+        const nombre = localStorage.getItem("nombre");
+        const animal = localStorage.getItem("animalSeleccionado") || "capibara";
+        const empate = correctas === incorrectas;
+        const resultadoBueno = correctas > incorrectas;
+
+        let mensaje = empate ? `¡Muy bien, ${nombre}!` : resultadoBueno ? `¡Excelente, ${nombre}!` : `Debes practicar más, ${nombre}.`;
+        let imagenAnimal = resultadoBueno ? `Images/${capitalizar(animal)} feliz.png` : `Images/${capitalizar(animal)} triste.png`;
+
+        document.querySelector("h1")?.remove();
+
         zonaPreguntas.innerHTML = `
-          <div style="text-align: center; color: white;">
-            <h2 style="font-size: 50px;">🎉 ¡Terminaste!</h2>
-            <p style="font-size: 30px;">✅ Acertaste: ${correctas}</p>
-            <p style="font-size: 30px;">❌ Fallaste: ${incorrectas}</p>
-            <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+          <div class="resultado-final">
+            <h2 class="mensaje-final">${mensaje}</h2>
+            <div class="resultado-cuerpo">
+              ${empate ? '' : `<img src="${imagenAnimal}" alt="Animal final" class="animal-final-grande" />`}
+              <div class="resultado-datos">
+                <p class="resultado-texto">Acertaste: ${correctas}</p>
+                <p class="resultado-texto">Fallaste: ${incorrectas}</p>
+              </div>
+            </div>
+            <div class="boton-final">
+              <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+            </div>
           </div>
         `;
       }
@@ -132,4 +157,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
