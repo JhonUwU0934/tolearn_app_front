@@ -160,4 +160,10 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "progreso.html";
     });
   }
+  
+  if (btnCerrarSesion) {
+	  btnCerrarSesion.addEventListener("click", function () {
+	      window.location.href = "registro.html";
+	    });
+	  }
 });
