@@ -31,10 +31,5 @@ Al ser una app basada en HTML, CSS y JavaScript, para poder ejecutar el proyecto
 -Los ejercicios se responden con el control remoto usando las flechas y el botón Enter.
 -Al terminar, la app muestra un mensaje de evaluación y se puede volver a jugar.
 
-Tecnologías utilizadas
-
--HTML5.
--CSS3.
--JavaScript.
--LocalStorage.
--Navegación con control remoto (compatible con Tizen).
+Tecnologías utilizadas:
+HTML5, CSS, JavaScript, LocalStorage y Navegación con control remoto (compatible con Tizen).
