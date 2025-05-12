@@ -2,7 +2,45 @@ document.addEventListener("DOMContentLoaded", function () {
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
   const edad = parseInt(localStorage.getItem("edad")) || 4;
-  const cifras = edad >= 6 ? 2 : 1;
+  const nivel = localStorage.getItem("nivelEducativo") || "";
+
+  let cifras;
+  let permitirRestas = true;
+
+  switch (nivel.toLowerCase()) {
+    case "jardín":
+    case "jardin":
+      permitirRestas = false;
+      break;
+    case "primero":
+      cifras = 1;
+      break;
+    case "segundo":
+      cifras = 2;
+      break;
+    case "tercero":
+      cifras = 3;
+      break;
+    case "cuarto":
+      cifras = 4;
+      break;
+    default:
+      if (edad === 4) permitirRestas = false;
+      else if (edad === 5) cifras = 1;
+      else if (edad === 6) cifras = 2;
+      else if (edad === 7) cifras = 3;
+      else if (edad >= 8) cifras = 4;
+      else cifras = 1;
+  }
+
+  if (!permitirRestas) {
+    zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
+      🚫 Las restas no están habilitadas para tu nivel educativo o edad.
+      <br><br>
+      <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+    </div>`;
+    return;
+  }
 
   let indexPregunta = 0;
   const totalPreguntas = 10;
@@ -11,32 +49,32 @@ document.addEventListener("DOMContentLoaded", function () {
   let incorrectas = 0;
 
   function generarPregunta() {
-	  let num1 = cifras === 1 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 90) + 10;
-	  let num2 = cifras === 1 ? Math.floor(Math.random() * 9) + 1 : Math.floor(Math.random() * 90) + 10;
+    let max = Math.pow(10, cifras);
+    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
 
-	  if (num2 > num1) [num1, num2] = [num2, num1]; // evitar negativos
+    let num1 = Math.floor(Math.random() * (max - min)) + min;
+    let num2 = Math.floor(Math.random() * (max - min)) + min;
 
-	  const correcta = num1 - num2;
-	  const opciones = new Set([correcta]);
+    if (num2 > num1) [num1, num2] = [num2, num1];
 
-	  // Generar distractores únicos y razonables
-	  while (opciones.size < 3) {
-	    const variacion = Math.floor(Math.random() * 10) + 1;
-	    const signo = Math.random() < 0.5 ? -1 : 1;
-	    const distractor = correcta + (variacion * signo);
-	    if (distractor >= 0) {
-	      opciones.add(distractor);
-	    }
-	  }
+    const correcta = num1 - num2;
+    const opciones = new Set([correcta]);
 
-	  const opcionesArray = Array.from(opciones).sort(() => Math.random() - 0.5);
+    while (opciones.size < 3) {
+      const variacion = Math.floor(Math.random() * 10) + 1;
+      const signo = Math.random() < 0.5 ? -1 : 1;
+      const distractor = correcta + (variacion * signo);
+      if (distractor >= 0) opciones.add(distractor);
+    }
 
-	  return {
-	    texto: `${num1} - ${num2}`,
-	    correcta,
-	    opciones: opcionesArray
-	  };
-	}
+    const opcionesArray = Array.from(opciones).sort(() => Math.random() - 0.5);
+
+    return {
+      texto: `${num1} - ${num2}`,
+      correcta,
+      opciones: opcionesArray
+    };
+  }
 
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
@@ -48,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `<button class="boton" data-respuesta="${op}" tabindex="0">${op}</button>`
           ).join("")}
         </div>
+        <img id="animalExpresion" src="" alt="Animal expresión" class="animal-grande" />
       </div>
     `;
 
@@ -60,6 +99,14 @@ document.addEventListener("DOMContentLoaded", function () {
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
+
+    const animal = localStorage.getItem("animalSeleccionado") || "capibara";
+    const expresion = correcta ? "feliz" : "triste";
+    const imagenAnimal = `Images/${capitalizar(animal)} ${expresion}.png`;
+
+    const img = document.getElementById("animalExpresion");
+    img.src = imagenAnimal;
+    img.style.display = "block";
 
     feedback.textContent = correcta ? "✔¡Muy bien!" : "❌Intenta otra vez.";
     feedback.style.color = correcta ? "lime" : "red";
@@ -78,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         zonaPreguntas.innerHTML = `
           <div style="text-align: center; color: white;">
-            <h2 style="font-size: 50px;">🎉 ¡Terminaste los 10 ejercicios!</h2>
+            <h2 style="font-size: 50px;">🎉 ¡Terminaste!</h2>
             <p style="font-size: 30px;">✅ Acertaste: ${correctas}</p>
             <p style="font-size: 30px;">❌ Fallaste: ${incorrectas}</p>
             <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver a niveles</button>
@@ -86,6 +133,10 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
       }
     }, 2000);
+  }
+
+  function capitalizar(texto) {
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
   for (let i = 0; i < totalPreguntas; i++) {

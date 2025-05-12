@@ -2,15 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnSumas = document.getElementById("btnSumas");
   const btnRestas = document.getElementById("btnRestas");
   const btnVolver = document.getElementById("btnVolver");
-
-  // Habilitar botón de restas si se completó sumas
-  const sumaCompletada = localStorage.getItem("sumaCompletada") === "true";
-  if (sumaCompletada) {
-	  btnRestas.classList.remove("bloqueado");
-	} else {
-	  btnRestas.setAttribute("tabindex", "-1"); // No enfocable
-	  btnRestas.disabled = true;
-	}
+  const btnMultiplicacion = document.getElementById("btnMultiplicacion");
+  const btnMezclados = document.getElementById("btnMezclados");
 
   // Cargar sumas
   btnSumas.addEventListener("click", function () {
@@ -24,6 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.removeItem("resumenProgreso");
     localStorage.setItem("operacion", "resta"); // opcional también
     window.location.href = "preguntasresta.html";
+  });
+  
+  btnMultiplicacion.addEventListener("click", function () {
+	  localStorage.removeItem("resumenProgreso");
+	  window.location.href = "preguntasmultiplicacion.html";
+	});
+
+  btnMezclados.addEventListener("click", function () {
+    localStorage.removeItem("resumenProgreso");
+    window.location.href = "preguntasmezcladas.html";
   });
 
   // Volver al menú
