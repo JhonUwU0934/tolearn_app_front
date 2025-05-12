@@ -5,39 +5,32 @@ document.addEventListener("DOMContentLoaded", function () {
   const nivel = localStorage.getItem("nivelEducativo") || "";
 
   let cifras;
-  let permitirMultiplicaciones = true;
+  let permitirDivision = true;
 
-  switch (nivel.toLowerCase()) {
-    case "jardín":
-    case "jardin":
-    case "primero":
-      permitirMultiplicaciones = false;
-      break;
-    case "segundo":
-      cifras = 1;
-      break;
-    case "tercero":
-      cifras = 2;
-      break;
-    case "cuarto":
-      cifras = 3;
-      break;
-    default:
-      if (edad === 4 || edad === 5) permitirMultiplicaciones = false;
-      else if (edad === 6) cifras = 1;
-      else if (edad === 7) cifras = 2;
-      else if (edad >= 8) cifras = 3;
-      else cifras = 1;
+  if (!nivel) {
+    permitirDivision = false;
+  } else {
+    switch (nivel.toLowerCase()) {
+      case "jardín":
+      case "jardin":
+      case "primero":
+      case "segundo":
+        permitirDivision = false;
+        break;
+      case "tercero":
+        cifras = 1;
+        break;
+      case "cuarto":
+        cifras = 2;
+        break;
+      default:
+        permitirDivision = false;
+    }
   }
 
-  // Si no tiene nivel educativo, no puede hacer multiplicaciones
-  if (!nivel || nivel.trim() === "") {
-    permitirMultiplicaciones = false;
-  }
-
-  if (!permitirMultiplicaciones) {
+  if (!permitirDivision) {
     zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
-      🚫 Las multiplicaciones no están habilitadas para tu nivel educativo o edad.
+      🚫 Las divisiones no están habilitadas para tu nivel educativo o edad.
       <br><br>
       <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
     </div>`;
@@ -51,24 +44,31 @@ document.addEventListener("DOMContentLoaded", function () {
   let incorrectas = 0;
 
   function generarPregunta() {
-    let max = Math.pow(10, cifras);
-    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
+    let divisor, cociente, dividendo;
 
-    const num1 = Math.floor(Math.random() * (max - min)) + min;
-    const num2 = Math.floor(Math.random() * (max - min)) + min;
-    const correcta = num1 * num2;
+    if (cifras === 1) {
+      divisor = Math.floor(Math.random() * 9) + 1;
+      cociente = Math.floor(Math.random() * 9) + 1;
+    } else {
+      divisor = Math.floor(Math.random() * 90) + 10;
+      cociente = Math.floor(Math.random() * 9) + 1;
+    }
+
+    dividendo = divisor * cociente;
+
+    const correcta = cociente;
     const opciones = new Set([correcta]);
 
     while (opciones.size < 3) {
-      const variacion = Math.floor(Math.random() * 10) + 1;
+      const variacion = Math.floor(Math.random() * 4) + 1;
       const distractor = correcta + (Math.random() < 0.5 ? -variacion : variacion);
-      if (distractor >= 0) opciones.add(distractor);
+      if (distractor > 0) opciones.add(distractor);
     }
 
     const opcionesArray = Array.from(opciones).sort(() => Math.random() - 0.5);
 
     return {
-      texto: `${num1} × ${num2}`,
+      texto: `${dividendo} ÷ ${divisor}`,
       correcta,
       opciones: opcionesArray
     };
