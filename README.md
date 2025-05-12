@@ -32,6 +32,7 @@ Al ser una app basada en HTML, CSS y JavaScript, para poder ejecutar el proyecto
 -Al terminar, la app muestra un mensaje de evaluación y se puede volver a jugar.
 
 Tecnologías utilizadas
+
 -HTML5.
 -CSS3.
 -JavaScript.
