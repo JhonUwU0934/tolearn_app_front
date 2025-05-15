@@ -47,11 +47,15 @@ document.addEventListener("DOMContentLoaded", function () {
       btnMezclados.style.display = "inline-block";
       break;
     default:
-      if (edad >= 4 && edad <= 8) {
-        btnSumas.style.display = "inline-block";
-        btnRestas.style.display = "inline-block";
-        btnMezclados.style.display = "inline-block";
-      }
+    	if (edad === 4) {
+    		  btnSumas.style.display = "inline-block";
+    		  btnRestas.style.display = "none";
+    		  btnMezclados.style.display = "none";
+    		} else if (edad >= 5 && edad <= 8) {
+    		  btnSumas.style.display = "inline-block";
+    		  btnRestas.style.display = "inline-block";
+    		  btnMezclados.style.display = "inline-block";
+    		}
   }
 
   // Eventos
