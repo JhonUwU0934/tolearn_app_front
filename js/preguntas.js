@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (edad === 4 || edad === 5) cifras = 1;
       else if (edad === 6) cifras = 2;
       else if (edad === 7) cifras = 3;
-      else if (edad >= 8) cifras = 4;
+      else if (edad >= 8) cifras = 3;
       else cifras = 1;
   }
 

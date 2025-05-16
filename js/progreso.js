@@ -34,11 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
   historial.forEach(item => item.correcto ? correctas++ : incorrectas++);
 
   resumenDiv.innerHTML = `
-    <h2>Tu progreso, ${nombreUsuario}:</h2>
-    <p>✅ Correctas: <strong>${correctas}</strong></p>
-    <p>❌ Incorrectas: <strong>${incorrectas}</strong></p>
-    <p>📊 Total de preguntas respondidas: <strong>${correctas + incorrectas}</strong></p>
-  `;
+  <h2 style="font-size: 34px; color: black;">Tu progreso, <strong>${nombreUsuario}</strong>:</h2>
+  <p style="font-size: 26px;">Correctas: <strong>${correctas}</strong></p>
+  <p style="font-size: 26px;">Incorrectas: <strong>${incorrectas}</strong></p>
+  <p style="font-size: 26px;">Total de preguntas respondidas: <strong>${correctas + incorrectas}</strong></p>
+`;
 
   // Ocultar historial de respuestas (lista larga)
   historialDiv.innerHTML = ""; // <--- Solo esto cambia
@@ -54,20 +54,35 @@ document.addEventListener("DOMContentLoaded", function () {
       }]
     },
     options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: 'Progreso de Respuestas'
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { precision: 0 }
-        }
-      }
+    	  responsive: false,
+    	  plugins: {
+    	    legend: { display: false },
+    	    title: {
+    	      display: true,
+    	      text: 'Progreso de Respuestas',
+    	      font: {
+    	        size: 26
+    	      }
+    	    }
+    	  },
+    	  scales: {
+    	    y: {
+    	      beginAtZero: true,
+    	      ticks: {
+    	        precision: 0,
+    	        font: {
+    	          size: 22
+    	        }
+    	      }
+    	    },
+    	    x: {
+    	      ticks: {
+    	        font: {
+    	          size: 22
+    	        }
+    	      }
+    	    }
+    	  }
     }
   });
 
@@ -125,8 +140,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  resumenTexto.innerHTML = htmlResumen;
-  canvas.insertAdjacentElement("afterend", resumenTexto);
+  const resumenOperacionesDiv = document.getElementById("resumenOperaciones");
+  resumenOperacionesDiv.innerHTML = htmlResumen;
 
   document.getElementById("btnReiniciar").addEventListener("click", () => {
     localStorage.removeItem("historialIntentos");

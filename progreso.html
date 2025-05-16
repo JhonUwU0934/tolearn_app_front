@@ -10,11 +10,19 @@
 </head>
 <body>
   <div class="contenedor-progreso">
-    <button class="boton" id="btnVolver" tabindex="0">⬅ Volver al menú</button>
-    <div id="resumenProgreso" style="margin-top:20px;"></div>
-    <canvas id="graficoProgreso" width="400" height="200" style="margin-top:20px;"></canvas>
-    <div id="historialIntentos" style="margin-top:30px;"></div>
-    <button class="boton" id="btnReiniciar" tabindex="0" style="margin-top:30px;">🔄 Reiniciar progreso</button>
+  <button class="boton" id="btnVolver" tabindex="0">⬅ Volver al menú</button>
+  <button class="boton" id="btnReiniciar" tabindex="0">🔄 Reiniciar progreso</button>
+
+  <div class="bloque-estadisticas-column">
+  <div class="bloque-grafica">
+    <div id="resumenProgreso"></div>
+    <canvas id="graficoProgreso" width="750" height="560"></canvas>
   </div>
+  <div class="bloque-resumen-operaciones" id="resumenOperaciones"></div>
+</div>
+
+  <div id="historialIntentos"></div>
+
+</div>
 </body>
 </html>
