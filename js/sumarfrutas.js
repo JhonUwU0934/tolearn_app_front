@@ -1,38 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
-  const edad = parseInt(localStorage.getItem("edad")) || 4;
-  const nivel = localStorage.getItem("nivelEducativo") || "";
-
-  let permitirDivision = true;
-
-  if (!nivel) {
-    permitirDivision = false;
-  } else {
-    switch (nivel.toLowerCase()) {
-      case "jardín":
-      case "jardin":
-      case "primero":
-      case "segundo":
-        permitirDivision = false;
-        break;
-      case "tercero":
-      case "cuarto":
-        permitirDivision = true;
-        break;
-      default:
-        permitirDivision = false;
-    }
-  }
-
-  if (!permitirDivision) {
-    zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
-      🚫 Las divisiones no están habilitadas para tu nivel educativo o edad.
-      <br><br>
-      <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
-    </div>`;
-    return;
-  }
 
   let indexPregunta = 0;
   const totalPreguntas = 10;
@@ -40,46 +8,66 @@ document.addEventListener("DOMContentLoaded", function () {
   let correctas = 0;
   let incorrectas = 0;
 
+  const frutasDisponibles = {
+    fresa: ["images/fresa1.png"],
+    uva: ["images/uva1.png"],
+    manzana: ["images/manzana1.png"]
+  };
+
+  function obtenerFrutaUnica() {
+    const keys = Object.keys(frutasDisponibles);
+    const tipo = keys[Math.floor(Math.random() * keys.length)];
+    return frutasDisponibles[tipo];
+  }
+
+  function generarFrutasHTML(cantidad, imagenesFruta) {
+    let html = `<div class="grupo-frutas">`;
+    for (let i = 0; i < cantidad; i++) {
+      const variante = imagenesFruta[Math.floor(Math.random() * imagenesFruta.length)];
+      html += `<img src="${variante}" class="fruta-img">`;
+    }
+    html += `</div>`;
+    return html;
+  }
+
   function generarPregunta() {
-    let divisor, cociente, dividendo;
+    const resultado = Math.floor(Math.random() * 8) + 2; // 2 a 9
+    const num1 = Math.floor(Math.random() * (resultado - 1)) + 1;
+    const num2 = resultado - num1;
 
-    if (nivel.toLowerCase() === "tercero") {
-      // Todo de un dígito
-      divisor = Math.floor(Math.random() * 8) + 2; // 2 a 9
-      cociente = Math.floor(Math.random() * 8) + 2;
-      dividendo = divisor * cociente;
-    } else if (nivel.toLowerCase() === "cuarto") {
-    	  // Divisiones con dividendos de tres cifras y divisor de un dígito
-    	  do {
-    	    divisor = Math.floor(Math.random() * 8) + 2; // 2 a 9
-    	    cociente = Math.floor(Math.random() * 90) + 10; // 10 a 99
-    	    dividendo = divisor * cociente;
-    	  } while (dividendo < 100 || dividendo > 999); // tres cifras
-    	}
+    const correcta = num1 + num2;
+    const texto = `${num1} + ${num2}`;
 
-    const correcta = cociente;
     const opciones = new Set([correcta]);
-
     while (opciones.size < 3) {
       const variacion = Math.floor(Math.random() * 4) + 1;
-      const distractor = correcta + (Math.random() < 0.5 ? -variacion : variacion);
-      if (distractor > 0) opciones.add(distractor);
+      const signo = Math.random() < 0.5 ? -1 : 1;
+      const distractor = correcta + (variacion * signo);
+      if (distractor >= 0 && distractor <= 9) opciones.add(distractor);
     }
 
-    const opcionesArray = Array.from(opciones).sort(() => Math.random() - 0.5);
-
     return {
-      texto: `${dividendo} ÷ ${divisor}`,
+      texto,
       correcta,
-      opciones: opcionesArray
+      opciones: Array.from(opciones).sort(() => Math.random() - 0.5)
     };
   }
 
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
+    const imagenesFruta = obtenerFrutaUnica();
+    const [cantidad1, cantidad2] = pregunta.texto.split("+").map(s => parseInt(s.trim()));
+
+    document.querySelector(".pregunta-container")?.classList.remove("subir-con-animal");
+
     zonaPreguntas.innerHTML = `
       <div class="pregunta-seccion" data-correcta="${pregunta.correcta}">
-        <h1 style="font-size:70px;">${pregunta.texto}</h1>
+        <h1 style="font-size:70px;">¿Cuántas frutas hay en total?</h1>
+        <div class="suma-frutas">
+          ${generarFrutasHTML(cantidad1, imagenesFruta)}
+          <span style="font-size:60px; margin: 0 10px;">+</span>
+          ${generarFrutasHTML(cantidad2, imagenesFruta)}
+        </div>
         <div class="opciones">
           ${pregunta.opciones.map(op =>
             `<button class="boton" data-respuesta="${op}" tabindex="0">${op}</button>`
@@ -106,14 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const img = document.getElementById("animalExpresion");
     img.src = imagenAnimal;
     img.style.display = "block";
+    document.querySelector(".pregunta-container")?.classList.add("subir-con-animal");
 
-    const nombre = localStorage.getItem("nombre") || "niño";
+    const nombre = localStorage.getItem("nombre");
     if (correcta) {
       feedback.innerHTML = `<div class="feedback-contenedor">¡Muy bien, ${nombre}!</div>`;
-      feedback.style.color = "black";
     } else {
       feedback.innerHTML = `<div class="feedback-contenedor">Vuelve a intentarlo.</div>`;
-      feedback.style.color = "black";
     }
 
     correcta ? correctas++ : incorrectas++;
@@ -124,7 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
       incorrectas: 0,
       total: 0
     };
-
     const historial = JSON.parse(localStorage.getItem("historialIntentos")) || [];
     const nivel = localStorage.getItem("nivelEducativo") || "";
     const edad = parseInt(localStorage.getItem("edad")) || null;
@@ -144,38 +130,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
     localStorage.setItem("resumenProgreso", JSON.stringify(resumen));
     localStorage.setItem("historialIntentos", JSON.stringify(historial));
-    
-    indexPregunta++;
 
+    indexPregunta++;
     setTimeout(() => {
       if (indexPregunta < preguntasGeneradas.length) {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
-        feedback.textContent = "";
-        const empate = correctas === incorrectas;
-        const resultadoBueno = correctas > incorrectas;
-        const mensaje = empate ? `¡Muy bien, ${nombre}!` : resultadoBueno ? `¡Excelente, ${nombre}!` : `Debes practicar más, ${nombre}.`;
-        const imagenAnimalFinal = resultadoBueno ? `Images/${capitalizar(animal)} feliz.png` : `Images/${capitalizar(animal)} triste.png`;
-
-        document.querySelector("h1")?.remove();
-        zonaPreguntas.innerHTML = `
-          <div class="resultado-final">
-            <h2 class="mensaje-final">${mensaje}</h2>
-            <div class="resultado-cuerpo">
-              ${empate ? '' : `<img src="${imagenAnimalFinal}" alt="Animal final" class="animal-final-grande" />`}
-              <div class="resultado-datos">
-                <p class="resultado-texto">Acertaste: ${correctas}</p>
-                <p class="resultado-texto">Fallaste: ${incorrectas}</p>
-              </div>
-            </div>
-            <div class="boton-final">
-              <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
-            </div>
-          </div>
-        `;
+        mostrarResultadoFinal();
       }
     }, 2000);
+  }
+
+  function mostrarResultadoFinal() {
+    feedback.textContent = "";
+    const nombre = localStorage.getItem("nombre");
+    const animal = localStorage.getItem("animalSeleccionado") || "capibara";
+    const empate = correctas === incorrectas;
+    const resultadoBueno = correctas > incorrectas;
+
+    let mensaje = empate ? `¡Muy bien, ${nombre}!` : resultadoBueno ? `¡Excelente, ${nombre}!` : `Debes practicar más, ${nombre}.`;
+    let imagenAnimal = resultadoBueno ? `Images/${capitalizar(animal)} feliz.png` : `Images/${capitalizar(animal)} triste.png`;
+
+    document.querySelector("h1")?.remove();
+
+    zonaPreguntas.innerHTML = `
+      <div class="resultado-final">
+        <h2 class="mensaje-final">${mensaje}</h2>
+        <div class="resultado-cuerpo">
+          ${empate ? '' : `<img src="${imagenAnimal}" alt="Animal final" class="animal-final-grande" />`}
+          <div class="resultado-datos">
+            <p class="resultado-texto">Acertaste: ${correctas}</p>
+            <p class="resultado-texto">Fallaste: ${incorrectas}</p>
+          </div>
+        </div>
+        <div class="boton-final">
+          <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+        </div>
+      </div>
+    `;
   }
 
   function capitalizar(texto) {
@@ -194,4 +187,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-

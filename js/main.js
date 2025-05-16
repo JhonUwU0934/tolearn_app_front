@@ -113,12 +113,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (form) {
     document.querySelectorAll('.boton[data-tipo="edad"]').forEach(btn => {
-      btn.addEventListener("click", function () {
-        document.querySelectorAll('.boton[data-tipo="edad"]').forEach(b => b.classList.remove("seleccionado"));
-        btn.classList.add("seleccionado");
-        edadInput.value = btn.textContent.trim();
-        localStorage.setItem("edad", edadInput.value);
-      });
+    	btn.addEventListener("click", function () {
+    		  document.querySelectorAll('.boton[data-tipo="edad"]').forEach(b => b.classList.remove("seleccionado"));
+    		  btn.classList.add("seleccionado");
+    		  const edad = parseInt(btn.textContent.trim());
+    		  edadInput.value = edad;
+    		  localStorage.setItem("edad", edad);
+         });
     });
 
     document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(btn => {

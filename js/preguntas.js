@@ -37,29 +37,44 @@ document.addEventListener("DOMContentLoaded", function () {
   let incorrectas = 0;
 
   function generarPregunta() {
-    let max = Math.pow(10, cifras);
-    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
+	  let num1, num2;
 
-    let num1 = Math.floor(Math.random() * (max - min)) + min;
-    let num2 = Math.floor(Math.random() * (max - min)) + min;
+	  if (nivel.toLowerCase() === "tercero") {
+	    const opcionesTercero = [
+	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 90) + 10],   // 3 cifras + 2 cifras
+	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 900) + 100]  // 3 cifras + 3 cifras
+	    ];
+	    [num1, num2] = opcionesTercero[Math.floor(Math.random() * opcionesTercero.length)]();
+	  } else if (nivel.toLowerCase() === "cuarto") {
+	    const opcionesCuarto = [
+	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 90) + 10],   // 4 cifras + 2 cifras
+	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 900) + 100]  // 4 cifras + 3 cifras
+	    ];
+	    [num1, num2] = opcionesCuarto[Math.floor(Math.random() * opcionesCuarto.length)]();
+	  } else {
+	    let max = Math.pow(10, cifras);
+	    let min = cifras === 1 ? 1 : Math.pow(10, cifras - 1);
+	    num1 = Math.floor(Math.random() * (max - min)) + min;
+	    num2 = Math.floor(Math.random() * (max - min)) + min;
+	  }
 
-    const correcta = num1 + num2;
-    const texto = `${num1} + ${num2}`;
+	  const correcta = num1 + num2;
+	  const texto = `${num1} + ${num2}`;
 
-    const opciones = new Set([correcta]);
-    while (opciones.size < 3) {
-      const variacion = Math.floor(Math.random() * 10) + 1;
-      const signo = Math.random() < 0.5 ? -1 : 1;
-      const distractor = correcta + (variacion * signo);
-      if (distractor >= 0) opciones.add(distractor);
-    }
+	  const opciones = new Set([correcta]);
+	  while (opciones.size < 3) {
+	    const variacion = Math.floor(Math.random() * 10) + 1;
+	    const signo = Math.random() < 0.5 ? -1 : 1;
+	    const distractor = correcta + (variacion * signo);
+	    if (distractor >= 0) opciones.add(distractor);
+	  }
 
-    return {
-      texto,
-      correcta,
-      opciones: Array.from(opciones).sort(() => Math.random() - 0.5)
-    };
-  }
+	  return {
+	    texto,
+	    correcta,
+	    opciones: Array.from(opciones).sort(() => Math.random() - 0.5)
+	  };
+	}
 
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
@@ -104,6 +119,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     correcta ? correctas++ : incorrectas++;
 
+ // Guardar progreso
+    const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
+      correctas: 0,
+      incorrectas: 0,
+      total: 0
+    };
+    const historial = JSON.parse(localStorage.getItem("historialIntentos")) || [];
+    const nivel = localStorage.getItem("nivelEducativo") || "";
+    const edad = parseInt(localStorage.getItem("edad")) || null;
+
+    resumen.total++;
+    if (correcta) resumen.correctas++;
+    else resumen.incorrectas++;
+
+    historial.push({
+    	  nombre: nombre,
+    	  nivel: nivel,
+    	  edad: edad,
+    	  pregunta: btn.closest(".pregunta-seccion").querySelector("h1").textContent,
+    	  respuesta: respuesta,
+    	  correcto: correcta
+    	});
+
+    localStorage.setItem("resumenProgreso", JSON.stringify(resumen));
+    localStorage.setItem("historialIntentos", JSON.stringify(historial));
+    
     indexPregunta++;
     setTimeout(() => {
       if (indexPregunta < preguntasGeneradas.length) {
