@@ -74,20 +74,80 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (operacion === "resta" && num2 > num1) [num1, num2] = [num2, num1];
     if (operacion === "division") {
-      num2 = Math.floor(Math.random() * (max - min)) + min;
-      correcta = Math.floor(Math.random() * 9) + 1;
-      num1 = num2 * correcta;
-      texto = `${num1} ÷ ${num2}`;
-    } else if (operacion === "multiplicacion") {
-      correcta = num1 * num2;
-      texto = `${num1} × ${num2}`;
+    	  let divisor, cociente, dividendo;
+
+    	  if (nivel.toLowerCase() === "tercero") {
+    	    // Divisiones con dividendos de dos cifras y divisores de un dígito
+    	    do {
+    	      divisor = Math.floor(Math.random() * 8) + 2; // 2 a 9
+    	      cociente = Math.floor(Math.random() * 9) + 1; // 1 a 9
+    	      dividendo = divisor * cociente;
+    	    } while (dividendo < 10 || dividendo > 99); // Asegura dos cifras
+    	  } else if (nivel.toLowerCase() === "cuarto") {
+    	    // También dividendos de dos cifras, pero pueden ser más amplios
+    		  do {
+    	    	    divisor = Math.floor(Math.random() * 8) + 2; // 2 a 9
+    	    	    cociente = Math.floor(Math.random() * 90) + 10; // 10 a 99
+    	    	    dividendo = divisor * cociente;
+    	    	  } while (dividendo < 100 || dividendo > 999); // tres cifras
+    	  } else {
+    	    // Otros niveles
+    	    divisor = Math.floor(Math.random() * 8) + 2;
+    	    cociente = Math.floor(Math.random() * 9) + 1;
+    	    dividendo = divisor * cociente;
+    	  }
+
+    	  num1 = dividendo;
+    	  num2 = divisor;
+    	  correcta = cociente;
+    	  texto = `${num1} ÷ ${num2}`;
+    	} else if (operacion === "multiplicacion") {
+    	  if (nivel.toLowerCase() === "tercero") {
+    	    num1 = Math.floor(Math.random() * 90) + 10;  
+    	    num2 = Math.floor(Math.random() * 9) + 1;   
+    	  } else if (nivel.toLowerCase() === "cuarto") {
+    	    num1 = Math.floor(Math.random() * 90) + 10; 
+    	    num2 = Math.floor(Math.random() * 90) + 1;   
+    	  }
+    	  correcta = num1 * num2;
+    	  texto = `${num1} × ${num2}`;
     } else if (operacion === "suma") {
-      correcta = num1 + num2;
-      texto = `${num1} + ${num2}`;
+    	  if (nivel.toLowerCase() === "tercero") {
+    	    const opcionesTercero = [
+    	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 90) + 10],  
+    	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 900) + 100] 
+    	    ];
+    	    [num1, num2] = opcionesTercero[Math.floor(Math.random() * opcionesTercero.length)]();
+    	  } else if (nivel.toLowerCase() === "cuarto") {
+    	    const opcionesCuarto = [
+    	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 90) + 10],  
+    	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 900) + 100]  
+    	    ];
+    	    [num1, num2] = opcionesCuarto[Math.floor(Math.random() * opcionesCuarto.length)]();
+    	  }
+    	  
+    	  correcta = num1 + num2;
+    	  texto = `${num1} + ${num2}`;
     } else if (operacion === "resta") {
-      correcta = num1 - num2;
-      texto = `${num1} - ${num2}`;
-    }
+    	  if (nivel.toLowerCase() === "tercero") {
+    	    const opcionesTercero = [
+    	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 90) + 10],  
+    	      () => [Math.floor(Math.random() * 900) + 100, Math.floor(Math.random() * 900) + 100] 
+    	    ];
+    	    [num1, num2] = opcionesTercero[Math.floor(Math.random() * opcionesTercero.length)]();
+    	  } else if (nivel.toLowerCase() === "cuarto") {
+    	    const opcionesCuarto = [
+    	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 90) + 10], 
+    	      () => [Math.floor(Math.random() * 9000) + 1000, Math.floor(Math.random() * 900) + 100] 
+    	    ];
+    	    [num1, num2] = opcionesCuarto[Math.floor(Math.random() * opcionesCuarto.length)]();
+    	  }
+
+    	  if (num2 > num1) [num1, num2] = [num1 + num2, num1]; // asegurar resultado positivo
+
+    	  correcta = num1 - num2;
+    	  texto = `${num1} - ${num2}`;
+    	}
 
     const opciones = new Set([correcta]);
     while (opciones.size < 3) {
@@ -217,5 +277,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
 
