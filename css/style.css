@@ -105,6 +105,68 @@ body {
   margin-top: 10px;
 }
 
+.bloque-estadisticas {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 40px 50px;
+  margin-top: 40px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  max-width: 700px;
+  text-align: center;
+  font-size: 26px;
+  color: black;
+}
+
+.bloque-estadisticas-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 30px 20px;
+  margin-top: -10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  width: 95vw;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.bloque-grafica {
+  width: 100%;
+  text-align: center;
+}
+
+.bloque-estadisticas strong {
+  color: #2E8B57;
+  font-weight: bold;
+}
+
+.bloque-estadisticas p {
+  margin: 15px 0;
+}
+
+.bloque-estadisticas-flex {
+  display: flex;
+  gap: 60px;
+  justify-content: center; /* centramos el bloque completo */
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto; /* centrado horizontal en pantalla */
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+#graficoProgreso {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+}
+
 .nivel-btn {
   background-color: #ffa726; /* naranja */
   color: white;
@@ -316,6 +378,49 @@ body {
       font-weight: bold;
       color: white
     }
+    
+.bloque-estadisticas-flex {
+  display: flex;
+  gap: 40px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 30px 50px;
+  margin-top: 40px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  max-width: 900px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bloque-grafica {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+}
+
+.bloque-grafica h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+#btnReiniciar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.bloque-resumen-operaciones {
+  flex: 1;
+  min-width: 300px;
+  font-size: 22px;
+  color: black;
+}
+
+.bloque-resumen-operaciones p {
+  margin: 10px 0;
+}
 
  #btnVolver {
       position: absolute;
