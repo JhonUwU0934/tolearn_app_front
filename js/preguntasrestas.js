@@ -192,6 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <div class="boton-final">
               <button class="boton" onclick="window.location.href='niveles.html'" tabindex="0">Volver</button>
+              <button class="boton" onclick="window.location.href='apirestas.html'" tabindex="0" style="margin-top: 20px;">Retroalimentación</button>
             </div>
           </div>
         `;

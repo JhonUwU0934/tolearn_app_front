@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explicación de Sumas para Niños</title>
+    <link rel="stylesheet" href="css/style.css">  
+    <style>
+        /* Fuentes */
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+        
+        /* Estilos generales */
+        body {
+            font-family: 'Comic Neue', cursive;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Contenedor principal */
+        .container {
+		    max-width: 1200px;        /* Más ancho total */
+		    width: 98%;
+		    background-color: #E8F5E9;
+		    border-radius: 32px;
+		    box-shadow: 0 12px 40px rgba(76, 175, 80, 0.3);
+		    padding: 60px 50px;       /* Más espacio interno */
+		    position: relative;
+		    overflow: hidden;
+		    border: 5px solid #81C784;
+		}
+        
+        /* Decoración */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A, #CDDC39);
+        }
+        
+        /* Título */
+        h1 {
+            color: #33691E;
+            text-align: center;
+            font-size: 28px;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        h1::after {
+            content: "🌿";
+            font-size: 24px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        /* Contenedor de resultados */
+        .result-container {
+		    background-color: #FFFFFF;
+		    border-radius: 20px;
+		    padding: 45px;
+		    margin: 40px 0;
+		    min-height: 220px;        /* Más alto */
+		    border: 3px dashed #7CB342;
+		    position: relative;
+		    transition: all 0.3s ease;
+		}
+        
+        .result-container:hover {
+            border-color: #4CAF50;
+            background-color: #F1F8E9;
+        }
+        
+        /* Texto de resultado */
+        #resultado {
+		    font-size: 30px;          /* Texto muy grande */
+		    line-height: 2.2;
+		    color: #33691E;
+		    text-align: center;
+		}
+        
+        /* Botón */
+        button {
+            background: linear-gradient(90deg, #689F38, #8BC34A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 28px 46px;
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 195, 74, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(139, 195, 74, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        /* Animación para la carga */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        #resultado:contains("Esperando respuesta..."), 
+        #resultado:contains("Cargando respuesta...") {
+            animation: pulse 1.5s infinite;
+            color: #558B2F;
+        }
+        
+        /* Adaptación para dispositivos móviles */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 30px 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .result-container {
+                padding: 20px;
+            }
+            
+            button {
+                padding: 12px 24px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Explicación de Mandarina</h1>
+        
+        <div class="result-container">
+            <div id="resultado">Esperando respuesta...</div>
+        </div>
+        
+        <button id="consultar-btn">Consultar nuevamente</button>
+        <button onclick="window.location.href='menu.html'">Volver al menú</button>
+    </div>
+    <!-- Referencia al archivo JavaScript -->
+    <script src="js/apirestas.js" defer></script>
+    <script src="js/main.js" defer></script>
+</body>
+</html>
