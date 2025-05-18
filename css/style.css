@@ -354,7 +354,11 @@ body {
 }
 
 .boton-final {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* uno debajo del otro */
+  align-items: center;
+  gap: 20px; /* espacio entre ellos */
+  margin-top: 30px;
 }
 
 .pregunta-container {
