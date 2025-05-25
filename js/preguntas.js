@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Sección donde van las preguntas y el feedback
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
+  
+  //Se obtienen edad y nivel educativo del usuario guardados
   const edad = parseInt(localStorage.getItem("edad")) || 4;
   const nivel = localStorage.getItem("nivelEducativo") || "";
 
+  //Determinar cuántas cifras usar según nivel o edad
   let cifras;
   switch (nivel.toLowerCase()) {
     case "jardín":
@@ -30,12 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
       else cifras = 1;
   }
 
+  //Variables para controlar preguntas y resultados
   let indexPregunta = 0;
   const totalPreguntas = 10;
   const preguntasGeneradas = [];
   let correctas = 0;
   let incorrectas = 0;
 
+  //Genera una pregunta de suma según el nivel
   function generarPregunta() {
 	  let num1, num2;
 
@@ -62,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	  const texto = `${num1} + ${num2}`;
 
 	  const opciones = new Set([correcta]);
+	  // Se agregan distractores (respuestas falsas)
 	  while (opciones.size < 3) {
 	    const variacion = Math.floor(Math.random() * 10) + 1;
 	    const signo = Math.random() < 0.5 ? -1 : 1;
@@ -76,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	  };
 	}
 
+  //Muestra la pregunta actual en pantalla
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
     zonaPreguntas.innerHTML = `
@@ -89,13 +97,15 @@ document.addEventListener("DOMContentLoaded", function () {
         <img id="animalExpresion" src="" alt="Animal expresión" class="animal-grande" />
       </div>
     `;
-
+    
+    // Pone foco al primer botón
     setTimeout(() => {
       const visibles = Array.from(document.querySelectorAll('.boton')).filter(el => el.offsetParent !== null);
       if (visibles.length > 0) visibles[0].focus();
     }, 100);
   }
 
+  //Verifica si la respuesta seleccionada es correcta
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
@@ -119,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     correcta ? correctas++ : incorrectas++;
 
- // Guardar progreso
+    // Guardar progreso en localStorage
     const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
       correctas: 0,
       incorrectas: 0,
@@ -151,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
-    	  
+    	// Si se acabaron las preguntas, mostrar el resultado final  
         feedback.textContent = "";
         const nombre = localStorage.getItem("nombre");
         const animal = localStorage.getItem("animalSeleccionado") || "capibara";
@@ -183,16 +193,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2000);
   }
 
+  // Capitaliza la primera letra de un texto
   function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
+  //Genera todas las preguntas al inicio
   for (let i = 0; i < totalPreguntas; i++) {
     preguntasGeneradas.push(generarPregunta());
   }
 
+  //Muestra la primera pregunta
   mostrarPregunta();
 
+  //Escucha clics en las respuestas
   zonaPreguntas.addEventListener("click", function (e) {
     if (e.target.classList.contains("boton") && e.target.hasAttribute("data-respuesta")) {
       verificarRespuesta(e.target);

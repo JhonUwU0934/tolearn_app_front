@@ -1,12 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Obtiene las zonas donde se mostrarán preguntas y feedback
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
+  
+  //Carga edad y nivel educativo guardados del usuario
   const edad = parseInt(localStorage.getItem("edad")) || 4;
   const nivel = localStorage.getItem("nivelEducativo") || "";
 
+  //Define cuántas cifras usar y si se permiten restas
   let cifras;
   let permitirRestas = true;
 
+  //Según el nivel, se decide si se permiten restas y el tamaño de los números
   switch (nivel.toLowerCase()) {
     case "jardín":
     case "jardin":
@@ -33,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else cifras = 1;
   }
 
+  //Si no se permiten restas, muestra aviso y detiene el flujo
   if (!permitirRestas) {
     zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
       🚫 Las restas no están habilitadas para tu nivel educativo o edad.
@@ -42,12 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  //Control de preguntas y resultados
   let indexPregunta = 0;
   const totalPreguntas = 10;
   const preguntasGeneradas = [];
   let correctas = 0;
   let incorrectas = 0;
 
+  //Genera una pregunta de resta según el nivel
   function generarPregunta() {
 	  let num1, num2;
 
@@ -70,12 +78,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	    num2 = Math.floor(Math.random() * (max - min)) + min;
 	  }
 
-	  // Asegurar que num1 > num2
+	  // Asegurar que siempre sea num1 > num2 para evitar negativos
 	  if (num2 > num1) [num1, num2] = [num1 + num2, num1];
 
 	  const correcta = num1 - num2;
 	  const opciones = new Set([correcta]);
 
+	  // Genera dos distractores
 	  while (opciones.size < 3) {
 	    const variacion = Math.floor(Math.random() * 10) + 1;
 	    const signo = Math.random() < 0.5 ? -1 : 1;
@@ -92,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	  };
 	}
 
+  //Muestra la pregunta actual en pantalla
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
     zonaPreguntas.innerHTML = `
@@ -106,12 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
+    // Enfoca automáticamente el primer botón
     setTimeout(() => {
       const visibles = Array.from(document.querySelectorAll('.boton')).filter(el => el.offsetParent !== null);
       if (visibles.length > 0) visibles[0].focus();
     }, 100);
   }
 
+  //Verifica si la respuesta fue correcta y actualiza los contadores
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
@@ -135,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     correcta ? correctas++ : incorrectas++;
 
- // Guardar progreso
+    // Guarda el proceso en localStorage
     const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
       correctas: 0,
       incorrectas: 0,
@@ -168,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
-
+    	// Si se acabaron las preguntas, muestra los resultados finales
         feedback.textContent = "";
         const nombre = localStorage.getItem("nombre");
         const animal = localStorage.getItem("animalSeleccionado") || "capibara";
@@ -200,16 +212,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2000);
   }
 
+  // Función para poner en mayúscula la primera letra de un texto
   function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
+  //Genera todas las preguntas al iniciar
   for (let i = 0; i < totalPreguntas; i++) {
     preguntasGeneradas.push(generarPregunta());
   }
 
+  //Muestra la primera pregunta
   mostrarPregunta();
 
+  //Detecta clics en las opciones de respuesta
   zonaPreguntas.addEventListener("click", function (e) {
     if (e.target.classList.contains("boton") && e.target.hasAttribute("data-respuesta")) {
       verificarRespuesta(e.target);

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+  
+  // Sección de preguntas y de mensajes de feedback
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
 
@@ -8,18 +10,21 @@ document.addEventListener("DOMContentLoaded", function () {
   let correctas = 0;
   let incorrectas = 0;
 
+  //Imágenes de frutas disponibles para mostrar en las preguntas
   const frutasDisponibles = {
     fresa: ["images/fresa1.png"],
     uva: ["images/uva1.png"],
     manzana: ["images/manzana1.png"]
   };
 
+  //Selecciona una fruta al azar
   function obtenerFrutaUnica() {
     const keys = Object.keys(frutasDisponibles);
     const tipo = keys[Math.floor(Math.random() * keys.length)];
     return frutasDisponibles[tipo];
   }
 
+  //Genera HTML con imágenes de frutas según la cantidad indicada
   function generarFrutasHTML(cantidad, imagenesFruta) {
     let html = `<div class="grupo-frutas">`;
     for (let i = 0; i < cantidad; i++) {
@@ -30,8 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
     return html;
   }
 
+  //Crea una pregunta de suma con dos números que no pasen de 9
   function generarPregunta() {
-    const resultado = Math.floor(Math.random() * 8) + 2; // 2 a 9
+    const resultado = Math.floor(Math.random() * 8) + 2;
     const num1 = Math.floor(Math.random() * (resultado - 1)) + 1;
     const num2 = resultado - num1;
 
@@ -39,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const texto = `${num1} + ${num2}`;
 
     const opciones = new Set([correcta]);
+    // Se agregan distractores 
     while (opciones.size < 3) {
       const variacion = Math.floor(Math.random() * 4) + 1;
       const signo = Math.random() < 0.5 ? -1 : 1;
@@ -52,7 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
       opciones: Array.from(opciones).sort(() => Math.random() - 0.5)
     };
   }
-
+ 
+  //Muestra la pregunta actual en pantalla
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
     const imagenesFruta = obtenerFrutaUnica();
@@ -77,12 +85,14 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
+    // Pone el foco en el primer botón
     setTimeout(() => {
       const visibles = Array.from(document.querySelectorAll('.boton')).filter(el => el.offsetParent !== null);
       if (visibles.length > 0) visibles[0].focus();
     }, 100);
   }
 
+  //Verifica si la respuesta seleccionada es correcta
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
@@ -105,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     correcta ? correctas++ : incorrectas++;
     
- // Guardar progreso
+    // Guarda el progreso en localStorage
     const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
       correctas: 0,
       incorrectas: 0,
@@ -132,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.setItem("historialIntentos", JSON.stringify(historial));
 
     indexPregunta++;
+    // Pasa a la siguiente pregunta o muestra resultados finales
     setTimeout(() => {
       if (indexPregunta < preguntasGeneradas.length) {
         feedback.textContent = "";
@@ -142,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2000);
   }
 
+  //Muestra la pantalla final con el resumen de resultados
   function mostrarResultadoFinal() {
     feedback.textContent = "";
     const nombre = localStorage.getItem("nombre");
@@ -172,16 +184,20 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
   }
 
+  // Capitaliza el primer carácter de un texto
   function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
+  //Genera todas las preguntas al inicio
   for (let i = 0; i < totalPreguntas; i++) {
     preguntasGeneradas.push(generarPregunta());
   }
 
+  //Muestra la primera pregunta
   mostrarPregunta();
 
+  //Escucha los clics en las respuestas
   zonaPreguntas.addEventListener("click", function (e) {
     if (e.target.classList.contains("boton") && e.target.hasAttribute("data-respuesta")) {
       verificarRespuesta(e.target);
