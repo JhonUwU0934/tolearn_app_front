@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+	
+  // Se traen los botones del HTML para poder manejarlos desde el JS
   const btnSumas = document.getElementById("btnSumas");
   const btnSumasfrutas = document.getElementById("btnSumasfrutas");
   const btnRestas = document.getElementById("btnRestas");
@@ -6,18 +8,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnDivision = document.getElementById("btnDivision");
   const btnMezclados = document.getElementById("btnMezclados");
   const btnVolver = document.getElementById("btnVolver");
-
+  
+  //Se obtiene el nivel educativo y edad guardados en localStorage
   const nivel = (localStorage.getItem("nivelEducativo") || "").toLowerCase().trim();
   const edad = parseInt(localStorage.getItem("edad")) || 0;
 
-  // Ocultar todos los botones inicialmente
+  //Todos los botones se ocultan al inicio
   btnSumas.style.display = "none";
   btnSumasfrutas.style.display = "none";
   btnRestas.style.display = "none";
   btnMultiplicacion.style.display = "none";
   btnDivision.style.display = "none";
   btnMezclados.style.display = "none";
-
+  
+  //Según el nivel educativo o la edad, se muestran los botones necesarios
   if (nivel === "jardin" || nivel === "jardín" || (nivel === "" && edad === 4)) {
     btnSumasfrutas.style.display = "inline-block";
   } else if (nivel === "primero") {
@@ -36,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btnDivision.style.display = "inline-block";
     btnMezclados.style.display = "inline-block";
   } else {
-    // Sin nivel educativo
+	// Si no hay nivel, se revisa solo por edad
     if (edad === 4) {
       btnSumasfrutas.style.display = "inline-block";
     } else if (edad >= 5 && edad <= 8) {
@@ -46,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Eventos
+  // Aquí se asignan los eventos a cada botón
   btnSumas.addEventListener("click", function () {
     localStorage.removeItem("resumenProgreso");
     localStorage.setItem("operacion", "suma");

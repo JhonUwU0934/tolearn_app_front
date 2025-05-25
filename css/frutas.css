@@ -1,0 +1,148 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../Images/fondo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+
+.pregunta-container {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+    transition: transform 0.3s ease;
+    color: white;
+}
+
+.pregunta-seccion {
+    padding-bottom: 0;
+}
+
+.opciones {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.boton {
+    background-color: #ffa726;
+    color: white;
+    font-size: 28px;
+    padding: 26px 43px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    min-width: 180px;
+    text-align: center;
+    transition: transform 0.2s, background-color 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.boton:hover,
+.boton:focus,
+.boton.seleccionado {
+    background-color: #fb8c00;
+    transform: scale(1.1);
+    outline: none;
+}
+
+.grupo-frutas {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.fruta-img {
+    width: 110px;
+    height: 110px;
+}
+
+.suma-frutas {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.animal-grande {
+    width: 180px;
+    height: auto;
+    display: block;
+    margin: 30px auto 0;
+}
+
+.feedback-contenedor {
+    background-color: white;
+    color: black;
+    padding: 15px 25px;
+    border-radius: 20px;
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    max-width: 80%;
+    margin: 15px auto 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    display: inline-block;
+}
+
+.subir-con-animal {
+    margin-top: 0 !important;
+    transform: translateY(-30px);
+    transition: transform 0.3s ease;
+}
+
+.resultado-final {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.resultado-cuerpo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 10px;
+}
+
+.animal-final-grande {
+    width: 250px;
+}
+
+.resultado-datos {
+    text-align: left;
+}
+
+.resultado-texto {
+    font-size: 40px;
+    color: black;
+    margin: 10px 0;
+}
+
+.mensaje-final {
+    font-size: 48px;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.boton-final {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+#animalExpresion {
+    font-size: 0; /* Oculta el texto alt si no hay imagen cargada */
+}

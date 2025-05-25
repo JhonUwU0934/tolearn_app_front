@@ -1,9 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  // Sección donde van las preguntas y el feedback
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
+  
+  //Obtener edad y nivel del usuario desde localStorage
   const edad = parseInt(localStorage.getItem("edad")) || 4;
   const nivel = localStorage.getItem("nivelEducativo") || "";
 
+  //Configurar cuántas cifras y operaciones según nivel
   let cifras = 1;
   let cifrasMultiplicacion = 1;
   let cifrasDivision = 1;
@@ -37,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
       cifrasDivision = 2;
       break;
     default:
+      // Si no hay nivel, asignar solo suma/resta según edad
       if (edad === 4) operacionesPermitidas = [];
       else if (edad === 5) { operacionesPermitidas = ["suma", "resta"]; cifras = 1; }
       else if (edad === 6) { operacionesPermitidas = ["suma", "resta"]; cifras = 2; }
@@ -45,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
       else operacionesPermitidas = [];
   }
 
+  //Si no se permite, mostrar mensaje y salir
   if (operacionesPermitidas.length === 0) {
     zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
       🚫 Los ejercicios mezclados no están habilitados para tu nivel educativo o edad.
@@ -54,12 +61,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  //Variables para controlar el flujo del juego
   let indexPregunta = 0;
   const totalPreguntas = 20;
   const preguntasGeneradas = [];
   let correctas = 0;
   let incorrectas = 0;
 
+  //Función para generar una pregunta según la operación elegida
   function generarPregunta(operacion) {
     let cifrasActuales = cifras;
     if (operacion === "multiplicacion") cifrasActuales = cifrasMultiplicacion;
@@ -72,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let texto = "";
     let correcta = 0;
 
+    // Ajustes por tipo de operación
     if (operacion === "resta" && num2 > num1) [num1, num2] = [num2, num1];
     if (operacion === "division") {
     	  let divisor, cociente, dividendo;
@@ -149,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     	  texto = `${num1} - ${num2}`;
     	}
 
+    // Crear opciones de respuesta
     const opciones = new Set([correcta]);
     while (opciones.size < 3) {
       const variacion = Math.floor(Math.random() * 10) + 1;
@@ -164,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  //Repartir preguntas entre las operaciones permitidas
   const operacionesDistribuidas = [];
   const cantidadPorOperacion = Math.floor(totalPreguntas / operacionesPermitidas.length);
   const restante = totalPreguntas % operacionesPermitidas.length;
@@ -181,10 +193,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   operacionesDistribuidas.sort(() => Math.random() - 0.5);
 
+  //Generar todas las preguntas iniciales
   for (let i = 0; i < totalPreguntas; i++) {
     preguntasGeneradas.push(generarPregunta(operacionesDistribuidas[i]));
   }
 
+  //Mostrar la pregunta actual en pantalla
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
     zonaPreguntas.innerHTML = `
@@ -199,12 +213,14 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
+    // Poner foco al primer botón disponible
     setTimeout(() => {
       const visibles = Array.from(document.querySelectorAll('.boton')).filter(el => el.offsetParent !== null);
       if (visibles.length > 0) visibles[0].focus();
     }, 100);
   }
 
+  //Verificar si la respuesta seleccionada es correcta
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
@@ -234,13 +250,12 @@ document.addEventListener("DOMContentLoaded", function () {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
-    	  
+    	// Mostrar resultados finales al terminar
     	feedback.textContent = "";
     	const nombre = localStorage.getItem("nombre");
         const animal = localStorage.getItem("animalSeleccionado") || "capibara";
         const empate = correctas === incorrectas;
         const resultadoBueno = correctas > incorrectas;
-
         let mensaje = empate ? `¡Muy bien, ${nombre}!` : resultadoBueno ? `¡Excelente, ${nombre}!` : `Debes practicar más, ${nombre}.`;
         let imagenAnimal = resultadoBueno ? `Images/${capitalizar(animal)} feliz.png` : `Images/${capitalizar(animal)} triste.png`;
 
@@ -265,12 +280,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2000);
   }
 
+  // Capitaliza la primera letra de un texto
   function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
+  //Mostrar la primera pregunta
   mostrarPregunta();
 
+  //Escuchar clics en los botones de respuesta 
   zonaPreguntas.addEventListener("click", function (e) {
     if (e.target.classList.contains("boton") && e.target.hasAttribute("data-respuesta")) {
       verificarRespuesta(e.target);

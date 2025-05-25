@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   let index = 0;
-
+  
+  //Función para obtener todos los botones e inputs visibles (interactivos)
   function obtenerElementosInteractivos() {
 	  const visibles = Array.from(document.querySelectorAll('.boton, input[type="text"], .animal-btn'))
       .filter(el => el.offsetParent !== null);
@@ -9,10 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let elementosInteractivos = obtenerElementosInteractivos();
 
+  //Si hay elementos interactivos, se enfoca el primero
   if (elementosInteractivos.length > 0) {
     elementosInteractivos[index].focus();
   }
 
+  //Se escucha cualquier tecla presionada
   document.addEventListener("keydown", function (event) {
     elementosInteractivos = obtenerElementosInteractivos();
     if (elementosInteractivos.length === 0) return;
@@ -21,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const actual = elementosInteractivos[index];
     const currentRect = actual.getBoundingClientRect();
 
+    // Función para encontrar el elemento más cercano en la dirección deseada
     function encontrarElemento(direccion) {
       let mejorDistancia = Infinity;
       let mejorIndex = index;
@@ -59,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return mejorIndex;
     }
 
+    // Moverse con flechas del teclado y activar Enter
     switch (event.keyCode) {
       case 38:
         index = encontrarElemento("up");
@@ -84,7 +89,8 @@ document.addEventListener("DOMContentLoaded", function () {
       elementosInteractivos[index].focus();
     }
   });
-
+  
+  //Registro de teclas para Tizen (Smart TV)
   if (typeof tizen !== "undefined" && tizen.tvinputdevice) {
     tizen.tvinputdevice.registerKey("ArrowUp");
     tizen.tvinputdevice.registerKey("ArrowDown");
@@ -93,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tizen.tvinputdevice.registerKey("Enter");
   }
 
+  //Botón para comenzar
   const btnComenzar = document.getElementById("btnComenzar");
   if (btnComenzar) {
     btnComenzar.addEventListener("click", function () {
@@ -100,18 +107,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  //Mostrar nombre guardado en la interfaz
   const nombreUsuario = document.getElementById("nombreUsuario");
   if (nombreUsuario) {
     const nombreGuardado = localStorage.getItem("nombre");
     nombreUsuario.textContent = nombreGuardado || "Invitado";
   }
 
+  //Configuración del formulario de registro
   const form = document.getElementById("registroForm");
   const edadInput = document.getElementById("edad");
   const nivelInput = document.getElementById("nivel");
   const nombreInput = document.getElementById("nombre");
 
   if (form) {
+	// Selección de edad
     document.querySelectorAll('.boton[data-tipo="edad"]').forEach(btn => {
     	btn.addEventListener("click", function () {
     		  document.querySelectorAll('.boton[data-tipo="edad"]').forEach(b => b.classList.remove("seleccionado"));
@@ -122,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
          });
     });
 
+    // Selección de nivel educativo
     document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(btn => {
       btn.addEventListener("click", function () {
         document.querySelectorAll('.boton[data-tipo="nivel"]').forEach(b => b.classList.remove("seleccionado"));
@@ -130,7 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("nivelEducativo", nivelInput.value);
       });
     });
-
+    
+    // Validar y guardar datos del formulario
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       const nombre = nombreInput.value.trim();
@@ -147,21 +159,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  //Botón para jugar
   const btnJugar = document.getElementById("btnJugar");
-  const btnProgreso = document.getElementById("btnProgreso");
-
   if (btnJugar) {
     btnJugar.addEventListener("click", function () {
       window.location.href = "niveles.html";
     });
   }
-
+  
+  //Botón para ver el progreso
+  const btnProgreso = document.getElementById("btnProgreso");
   if (btnProgreso) {
     btnProgreso.addEventListener("click", function () {
       window.location.href = "progreso.html";
     });
   }
   
+  //Botón para cerrar sesión
   if (btnCerrarSesion) {
 	  btnCerrarSesion.addEventListener("click", function () {
 	      window.location.href = "registro.html";

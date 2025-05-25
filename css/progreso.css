@@ -1,0 +1,100 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../Images/fondoInicio.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.contenedor-progreso {
+    position: relative; /* clave para que absolute funcione dentro */
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#btnVolver {
+    position: absolute;
+    top: 20px;
+    left: -480px;
+    z-index: 10;
+}
+
+#btnReiniciar {
+    position: absolute;
+    top: 20px;
+    right: -480px;
+    z-index: 10;
+}
+
+.boton {
+    background-color: #ffa726;
+    color: white;
+    font-size: 26px;
+    padding: 24px 37px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    min-width: 180px;
+    text-align: center;
+    transition: transform 0.2s, background-color 0.3s;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.boton:hover,
+.boton:focus {
+    background-color: #fb8c00;
+    transform: scale(1.1);
+    outline: none;
+}
+
+.bloque-estadisticas-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 30px;
+    padding: 30px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 800px;
+}
+
+.bloque-grafica {
+    width: 100%;
+    text-align: center;
+}
+
+#resumenProgreso h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+#resumenProgreso p {
+    font-size: 26px;
+    margin: 5px 0;
+    color: black;
+}
+
+#resumenOperaciones {
+    font-size: 26px;
+    margin-top: 20px;
+    color: black;
+}
+
+canvas {
+    max-width: 700px;
+    max-height: 500px;
+    margin-top: 20px;
+}

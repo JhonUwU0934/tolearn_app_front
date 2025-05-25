@@ -1,11 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Secciones de preguntas y mensajes
   const zonaPreguntas = document.getElementById("zonaPreguntas");
   const feedback = document.getElementById("feedback");
+  
+  //Se obtienen edad y nivel educativo del usuario guardados
   const edad = parseInt(localStorage.getItem("edad")) || 4;
   const nivel = localStorage.getItem("nivelEducativo") || "";
 
+  //Verifica si el nivel permite divisiones
   let permitirDivision = true;
-
   if (!nivel) {
     permitirDivision = false;
   } else {
@@ -25,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  //Si no está permitido, muestra mensaje de bloqueo
   if (!permitirDivision) {
     zonaPreguntas.innerHTML = `<div style="text-align: center; color: white; font-size: 30px;">
       🚫 Las divisiones no están habilitadas para tu nivel educativo o edad.
@@ -34,12 +38,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  //Variables para controlar las preguntas y el progreso
   let indexPregunta = 0;
   const totalPreguntas = 10;
   const preguntasGeneradas = [];
   let correctas = 0;
   let incorrectas = 0;
 
+  //Genera una pregunta de división según el nivel
   function generarPregunta() {
     let divisor, cociente, dividendo;
 
@@ -59,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const correcta = cociente;
     const opciones = new Set([correcta]);
-
+    // Se agregan distractores (respuestas falsas)
     while (opciones.size < 3) {
       const variacion = Math.floor(Math.random() * 4) + 1;
       const distractor = correcta + (Math.random() < 0.5 ? -variacion : variacion);
@@ -75,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  //Muestra la pregunta en pantalla
   function mostrarPregunta() {
     const pregunta = preguntasGeneradas[indexPregunta];
     zonaPreguntas.innerHTML = `
@@ -89,12 +96,14 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
+    // Pone foco al primer botón
     setTimeout(() => {
       const visibles = Array.from(document.querySelectorAll('.boton')).filter(el => el.offsetParent !== null);
       if (visibles.length > 0) visibles[0].focus();
     }, 100);
   }
 
+  //Verifica si la respuesta seleccionada es correcta
   function verificarRespuesta(btn) {
     const respuesta = parseInt(btn.textContent);
     const correcta = parseInt(btn.getAttribute("data-respuesta")) === parseInt(btn.closest(".pregunta-seccion").dataset.correcta);
@@ -118,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     correcta ? correctas++ : incorrectas++;
     
- // Guardar progreso
+    // Guardar progreso en localStorage
     const resumen = JSON.parse(localStorage.getItem("resumenProgreso")) || {
       correctas: 0,
       incorrectas: 0,
@@ -152,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         feedback.textContent = "";
         mostrarPregunta();
       } else {
+    	// Si se acabaron las preguntas, mostrar el resultado final
         feedback.textContent = "";
         const empate = correctas === incorrectas;
         const resultadoBueno = correctas > incorrectas;
@@ -179,16 +189,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 2000);
   }
 
+  // Capitaliza el nombre del animal (primera letra mayúscula)
   function capitalizar(texto) {
     return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 
+  //Genera todas las preguntas al iniciar
   for (let i = 0; i < totalPreguntas; i++) {
     preguntasGeneradas.push(generarPregunta());
   }
 
+  //Muestra la primera pregunta
   mostrarPregunta();
 
+  //Escucha los clics en los botones de respuesta
   zonaPreguntas.addEventListener("click", function (e) {
     if (e.target.classList.contains("boton") && e.target.hasAttribute("data-respuesta")) {
       verificarRespuesta(e.target);
